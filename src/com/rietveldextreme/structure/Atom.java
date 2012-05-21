@@ -19,6 +19,7 @@ public class Atom extends StructureComposite {
 
 	public static final String ATOM_TAG = "Atom";
 	public static final String ATOMIC_NUMBER_TAG = "Z";
+	public static final String ATOM_SYMBOL_TAG = "symbol";
 
 	public static final String FRACT_COORDS_CHANGED = "FRACT_COORDS_CHANGED";
 	public static final String POSITION_CHANGED = "POSITION_CHANGED";

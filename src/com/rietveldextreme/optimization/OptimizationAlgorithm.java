@@ -15,7 +15,7 @@ public abstract class OptimizationAlgorithm extends Observable {
 		OPTIMIZATION_FINISHED
 	}
 
-	private int iterationsPerCycle = 20;
+	private int iterationsPerStep = 50;
 	private int stepsNumber = 5;
 	private int currentStep = 0;
 	private boolean paramLimitsEnabled = false;
@@ -23,9 +23,7 @@ public abstract class OptimizationAlgorithm extends Observable {
 
 	public abstract String getName();
 
-	public abstract String getResults();
-
-	public abstract int minimize(OptimizationProblem p);
+	public abstract OptimizationResults minimize(OptimizationProblem p);
 
 	public int getStepsNumber() {
 		return stepsNumber;
@@ -44,11 +42,11 @@ public abstract class OptimizationAlgorithm extends Observable {
 	}
 
 	public int getIterationsPerStep() {
-		return iterationsPerCycle;
+		return iterationsPerStep;
 	}
 
 	public void setIterationsPerStep(int iterations) {
-		iterationsPerCycle = iterations;
+		iterationsPerStep = iterations;
 	}
 	
 	public void enableParamLimits(boolean enable) {

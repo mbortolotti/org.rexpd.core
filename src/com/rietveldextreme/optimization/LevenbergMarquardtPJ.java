@@ -1,65 +1,83 @@
 package com.rietveldextreme.optimization;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.math.FunctionEvaluationException;
 import org.apache.commons.math.MaxEvaluationsExceededException;
-import org.apache.commons.math.MaxIterationsExceededException;
 import org.apache.commons.math.optimization.OptimizationException;
 import org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer;
 
-import com.rietveldextreme.algorithms.LevenbergMarquardt;
+
+public class LevenbergMarquardtPJ extends OptimizationAlgorithm {
+
+	public static final String LMPUREJAVA = "Levenberg Marquardt";
+
+	private LevenbergMarquardtOptimizer optimizer = null;
 
 
-public class LevenbergMarquardtPJ extends LevenbergMarquardt {
+	private double costTolerance = 1E-4;	/** Desired relative error in the sum of squares. */
+	private double parTolerance = 1E-6;		/** Desired relative error in the approximate solution parameters. */
+	private double orthoTolerance = 1E-4;	/** Desired max orthogonality between the function vector and the columns of the jacobian. */
 
-	public static final String LMPUREJAVA = "LMPureJava";
-	
-	String optResults = null;
-	
+	private OptimizationResults results = null;
+
+	public LevenbergMarquardtPJ() {
+
+		optimizer = new LevenbergMarquardtOptimizer();
+
+	}
+
 	@Override
 	public String getName() {
 		return LMPUREJAVA;
 	}
 
 	@Override
-	public String getResults() {
-		return optResults;
-	}
-
-	@Override
-	public int minimize(OptimizationProblem problem) {
-		optResults = null;
+	public OptimizationResults minimize(OptimizationProblem problem) {
 		int iter = getIterationsPerStep();
 		setCurrentStep(0);
 		FitnessFunction function = problem.getFitnessFunction();
-		
-		LevenbergMarquardtOptimizer optimizer = new LevenbergMarquardtOptimizer();
-		//optimizer.setMaxEvaluations(10);
-		optimizer.setCostRelativeTolerance(1E-3);
-		//optimizer.setParRelativeTolerance(1E-8);
-		optimizer.setOrthoTolerance(1E-3);
-		
-		
+
+		optimizer.setMaxEvaluations(getIterationsPerStep());
+		optimizer.setCostRelativeTolerance(costTolerance);
+		optimizer.setParRelativeTolerance(parTolerance);
+		optimizer.setOrthoTolerance(orthoTolerance);
+
+
 		double[] params = function.getParameterValues();
 		double[] data = function.getTargets();
 		if (params == null || data == null)
-			return -1;
-		
-		
-		
-		double[] covar = new double[params.length * params.length];
-		
+			return null;
+
 		notify(Events.OPTIMIZATION_STARTED);
+
+		OptimizationResults results = new OptimizationResults();
+		String newline = System.getProperty("line.separator");
+		String log = "Levenberg-Marquardt optimization started..." + newline;
+		DecimalFormat dfChiSquare = new DecimalFormat("##.##", new DecimalFormatSymbols(Locale.US));
+
 		while (getCurrentStep() < getStepsNumber()) {
 			if (hasStopRequested()) {
 				notify(Events.OPTIMIZATION_FINISHED);
 				setStopRequested(false);
-				return iter;
+				log = log + "Optimization interrupted by user!" + newline;
+				results.setResultsLog(log);
+				return results;
 			}
 			try {
 				optimizer.optimize(new FitnessFunctionAdapter(function), function.getTargets(), function.getWeights(), function.getParameterValues());
-				System.out.println("optimizer.getEvaluations(): " + optimizer.getEvaluations());
-				System.out.println("optimizer.getIterations(): " + optimizer.getIterations());
-				System.out.println("optimizer.getChiSquare(): " + optimizer.getChiSquare());
+				List<Parameter> parameters = function.getParameters();
+				double[] errors = optimizer.guessParametersErrors();
+				for (int np = 0; np < parameters.size(); np++) {
+					parameters.get(np).setError(errors[np]);
+				}
+				results.setParameters(parameters);
+				results.setChiSquare(optimizer.getChiSquare());
+				log = log + "iteration " + (getCurrentStep() + 1) +  " - Chi square: " 
+						+ dfChiSquare.format(optimizer.getChiSquare()) + newline;
 				setCurrentStep(getCurrentStep() + 1);
 				notify(Events.CYCLE_COMPLETED);
 			} catch (OptimizationException e) {
@@ -72,28 +90,35 @@ public class LevenbergMarquardtPJ extends LevenbergMarquardt {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			/**params = function.getParameterValues();
-			iter = ReXNative.LMminimize(params, data, covar, getIterationsPerStep(), function);
-			//ReXNative.LevenbergMarquardt(parameters, measurements.length, getIterationsPerCycle(), function);**/
-					}
-		/**RealMatrix covariance = MatrixUtils.createRealMatrix(params.length, params.length);
-		for (int i = 0; i < params.length; i++) {
-			for (int j = 0; j < params.length; j++) {
-				covariance.setEntry(i, j, covar[i * params.length + j]);
-			}
 		}
-		List<Parameter> parameters = function.getParameters();
-		String newline = System.getProperty("line.separator");
-		optResults = "Levenberg-Marquardt optimization" + newline + newline;
-		optResults = optResults + "Refined parameters:" + newline;
-		NumberFormat.getInstance().setMaximumFractionDigits(5);
-		for (int np = 0; np < parameters.size(); np++) {
-			String value = NumberFormat.getInstance().format(parameters.get(np).getValue());
-			String sdev = NumberFormat.getInstance().format(Math.sqrt(covariance.getEntry(np, np)));
-			optResults = optResults + parameters.get(np).getLabel() + " = " + value + " (\u03C3 = " + sdev + ")" + newline;
-		}**/
 		notify(Events.OPTIMIZATION_FINISHED);
-		return iter;
+		log = log + "Optimization finished!" + newline;
+		results.setResultsLog(log);
+		return results;
+	}
+
+	public double getCostRelativeTolerance() {
+		return costTolerance;
+	}
+
+	public void setCostRelativeTolerance(double crt) {
+		costTolerance = crt;
+	}
+
+	public double getParRelativeTolerance() {
+		return parTolerance;
+	}
+
+	public void setParRelativeTolerance(double prt) {
+		parTolerance = prt;
+	}
+
+	public double getOrthoTolerance() {
+		return orthoTolerance;
+	}
+
+	public void setOrthoTolerance(double ot) {
+		orthoTolerance = ot;
 	}
 
 

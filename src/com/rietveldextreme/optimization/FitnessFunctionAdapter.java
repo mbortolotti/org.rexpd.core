@@ -9,7 +9,7 @@ import static org.apache.commons.math.util.FastMath.abs;
 public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorialFunction {
 
 	private FitnessContextVectorial fitnessContext = null;
-
+	private boolean centralDiffApproximation = false;
 	private double eps = 1E-8;
 
 	public FitnessFunctionAdapter(FitnessContextVectorial context) {
@@ -29,6 +29,8 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectori
 			@Override
 			public double[][] value(double[] point) throws FunctionEvaluationException,
 			IllegalArgumentException {
+				if (centralDiffApproximation)
+					return jacobianCentralDiffApprox(point);
 				return jacobianForwardDiffApprox(point);
 			}
 		};

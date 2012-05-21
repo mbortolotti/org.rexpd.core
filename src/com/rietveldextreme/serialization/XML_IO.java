@@ -99,6 +99,22 @@ public class XML_IO {
 		return getElementText(element);
 	}
 
+	/**
+     * Returns the first descendant Element with the given tag name.
+     * @param name The name of the tag to match on. The special value "*" 
+     *   matches all tags.
+     * @return The first matching Element node or null if not found.
+     */
+	public static Element getFirstElementByTagName(Element parent, String tag) {
+		NodeList elementList = parent.getElementsByTagName(tag);
+		if (elementList == null || elementList.getLength() == 0)
+			return null;
+		Node firstChild = elementList.item(0);
+		if (firstChild instanceof Element)
+			return (Element) firstChild;
+		return null;
+	}
+
 	public void DisplayFeatures() {
 
 		DOMImplementation implementation = document.getImplementation();

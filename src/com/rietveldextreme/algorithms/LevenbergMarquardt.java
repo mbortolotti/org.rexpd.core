@@ -9,13 +9,14 @@ import org.apache.commons.math.linear.RealMatrix;
 import com.rietveldextreme.optimization.FitnessFunction;
 import com.rietveldextreme.optimization.OptimizationAlgorithm;
 import com.rietveldextreme.optimization.OptimizationProblem;
+import com.rietveldextreme.optimization.OptimizationResults;
 import com.rietveldextreme.optimization.Parameter;
 import com.rietveldextreme.utils.ReXNative;
 
 
 public class LevenbergMarquardt extends OptimizationAlgorithm {
 
-	public static final String LEVENBERG_MARQUARDT = "Levenberg Marquardt";
+	public static final String LEVENBERG_MARQUARDT = "Levenberg Marquardt (native)";
 	
 	String optResults = null;
 	
@@ -25,12 +26,7 @@ public class LevenbergMarquardt extends OptimizationAlgorithm {
 	}
 
 	@Override
-	public String getResults() {
-		return optResults;
-	}
-
-	@Override
-	public int minimize(OptimizationProblem problem) {
+	public OptimizationResults minimize(OptimizationProblem problem) {
 		optResults = null;
 		int iter = getIterationsPerStep();
 		setCurrentStep(0);
@@ -38,7 +34,7 @@ public class LevenbergMarquardt extends OptimizationAlgorithm {
 		double[] params = function.getParameterValues();
 		double[] data = function.getTargetValues();
 		if (params == null || data == null)
-			return -1;
+			return null;
 		double[] covar = new double[params.length * params.length];
 		//dispatchMessage(new Message(this, Events.OPTIMIZATION_STARTED.toString(), new Integer(0)));
 		notify(Events.OPTIMIZATION_STARTED);
@@ -47,7 +43,7 @@ public class LevenbergMarquardt extends OptimizationAlgorithm {
 				//dispatchMessage(new Message(this, Events.OPTIMIZATION_FINISHED.toString(), new Integer(iter)));
 				notify(Events.OPTIMIZATION_FINISHED);
 				setStopRequested(false);
-				return iter;
+				return null;
 			}
 			params = function.getParameterValues();
 			iter = ReXNative.LMminimize(params, data, covar, getIterationsPerStep(), function);
@@ -74,7 +70,7 @@ public class LevenbergMarquardt extends OptimizationAlgorithm {
 		}
 		//dispatchMessage(new Message(this, Events.OPTIMIZATION_FINISHED.toString(), new Integer(iter)));
 		notify(Events.OPTIMIZATION_FINISHED);
-		return iter;
+		return new OptimizationResults();
 	}
 
 

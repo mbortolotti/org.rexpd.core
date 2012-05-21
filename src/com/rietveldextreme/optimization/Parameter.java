@@ -15,6 +15,7 @@ public class Parameter extends AbstractSerializable implements Optimizable {
 
 	private Optimizable parent = null;
 	private double value = 0.0;
+	private double error = 0.0;
 	private double maxValue = 0.0;
 	private double minValue = 0.0;
 	private boolean optimizable = false;
@@ -76,6 +77,14 @@ public class Parameter extends AbstractSerializable implements Optimizable {
 		if (calculator != null)
 			return;
 		value = v;
+	}
+
+	public double getError() {
+		return error;
+	}
+
+	public void setError(double err) {
+		error = err;
 	}
 
 	public double getMaxValue() {

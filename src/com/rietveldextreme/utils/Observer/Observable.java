@@ -8,6 +8,7 @@ package com.rietveldextreme.utils.Observer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author mauro
@@ -17,7 +18,7 @@ import java.util.Iterator;
  */
 public class Observable implements IObservable {
 
-	private ArrayList<Observer> observers = null;
+	private List<Observer> observers = null;
 
 	public Observable() {
 		observers = new ArrayList<Observer>();
