@@ -2,12 +2,10 @@ package com.rietveldextreme.optimization;
 
 import java.util.List;
 
-import com.rietveldextreme.serialization.Serializable;
+import com.rietveldextreme.serialization.IBase;
 
 
-public interface Optimizable extends Serializable {
-	
-	public Optimizable getParentNode();
+public interface Optimizable extends IBase {
 	
 	public List<? extends Optimizable> getNodes();
 

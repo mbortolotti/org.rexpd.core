@@ -3,21 +3,18 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rietveldextreme.serialization.AbstractSerializable;
+import com.rietveldextreme.serialization.AbstractBase;
+import com.rietveldextreme.serialization.IBase;
 
 
-public abstract class AbstractOptimizable extends AbstractSerializable implements Optimizable {
-
-	List<Optimizable> nodes = null;
-	Optimizable parent = null;
+public abstract class AbstractOptimizable extends AbstractBase implements Optimizable {
 	
 	public AbstractOptimizable() {
 		this(null);
 	}
 	
-	public AbstractOptimizable(Optimizable parent) {
-		this.parent = parent;
-		nodes = new ArrayList<Optimizable>();
+	public AbstractOptimizable(IBase parent) {
+		super(parent);
 	}
 
 	@Override
@@ -25,14 +22,6 @@ public abstract class AbstractOptimizable extends AbstractSerializable implement
 		List<Optimizable> temp = new ArrayList<Optimizable>();
 		temp.addAll(nodes);
 		return temp;
-	}
-
-	public Optimizable getParentNode() {
-		return parent;
-	}
-	
-	public void addNode(Optimizable node) {
-		nodes.add(node);
 	}
 
 }

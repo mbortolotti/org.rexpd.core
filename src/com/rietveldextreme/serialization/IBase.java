@@ -2,7 +2,7 @@ package com.rietveldextreme.serialization;
 
 
 
-public interface Serializable {
+public interface IBase {
 	
 	public String getType();
 	public void setType(String type);
@@ -12,5 +12,7 @@ public interface Serializable {
 	
 	public String getUID();
 	public void setUID(String id);
+	
+	public IBase getParentNode();
 
 }

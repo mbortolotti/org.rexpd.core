@@ -3,11 +3,10 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParameterList extends AbstractOptimizable implements Optimizable {
+public class ParameterList extends AbstractOptimizable {
 	
 	private List<Parameter> parameters = null;
 	private String parameterLabel = null;
-	
 	
 	public ParameterList() {
 		this(null, "List", "Parameter", 1);

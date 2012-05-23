@@ -9,15 +9,16 @@ import org.apache.commons.math.linear.LUDecompositionImpl;
 import org.apache.commons.math.linear.MatrixUtils;
 import org.apache.commons.math.linear.RealMatrix;
 
+import com.rietveldextreme.optimization.AbstractOptimizable;
 import com.rietveldextreme.optimization.Optimizable;
-import com.rietveldextreme.serialization.AbstractSerializable;
+import com.rietveldextreme.serialization.IBase;
 
 /**
  * @version $Revision: 1.00 $, $Date: 28-gen-2004 10.08.13
  * @author Mauro Bortolotti
  * @since JDK1.1
  */
-public abstract class StructureComponent extends AbstractSerializable implements Optimizable {
+public abstract class StructureComponent extends AbstractOptimizable {
 
 	public static final String STRUCTURE_COMPONENT_TAG = "StructureComponent";
 	
@@ -36,6 +37,7 @@ public abstract class StructureComponent extends AbstractSerializable implements
 		setParent(parent);
 	}
 	
+	@ Override
 	public List<Optimizable> getNodes() {
 		List<Optimizable> nodes = new ArrayList<Optimizable>();
 		nodes.addAll(optNodes);
@@ -44,18 +46,20 @@ public abstract class StructureComponent extends AbstractSerializable implements
 		return nodes;
 	}
 	
+	@ Override
 	public void addNode(Optimizable opt) {
 		optNodes.add(opt);
 	}
 	
-	public Optimizable getParentNode() {
+	@ Override
+	public IBase getParentNode() {
 		return parentComponent;
 	}
 
 	public boolean isLeaf() {
 		return (getChildrenNumber() == 0);
 	}
-
+	
 	public StructureComponent getParent() {
 		return parentComponent;
 	}

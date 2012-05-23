@@ -1,20 +1,36 @@
 package com.rietveldextreme.serialization;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.rietveldextreme.optimization.Optimizable;
 
 
-public class AbstractSerializable implements Serializable {
-	
+
+public class AbstractBase implements IBase {
 	
 	private String type;
 	private String label;
 	private String ID = null;
 	
-	public AbstractSerializable() {
+	IBase parent = null;
+	protected List<Optimizable> nodes = null;
+	
+	public AbstractBase() {
+		this(null);
+	}
+	
+	public AbstractBase(IBase p) {
+		parent = p;
 		createUID();
 		setType("");
 		setLabel("");
+		nodes = new ArrayList<Optimizable>();
+	}
+	
+	public void addNode(Optimizable node) {
+		nodes.add(node);
 	}
 	
 	public String getType() {
@@ -45,6 +61,10 @@ public class AbstractSerializable implements Serializable {
 	
 	private void createUID() {
 		ID = UUID.randomUUID().toString();
+	}
+	
+	public IBase getParentNode() {
+		return parent;
 	}
 
 }

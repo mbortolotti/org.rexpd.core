@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class OptimizableCombo extends AbstractOptimizable implements Optimizable {
+public class OptimizableCombo extends AbstractOptimizable {
 
 	private List<Optimizable> items = null;
 	private Optimizable activeItem = null;

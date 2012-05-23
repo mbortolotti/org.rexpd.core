@@ -3,17 +3,16 @@ package com.rietveldextreme.optimization;
 import java.util.Collections;
 import java.util.List;
 
-import com.rietveldextreme.serialization.AbstractSerializable;
+import com.rietveldextreme.serialization.IBase;
 
 
 
-public class Parameter extends AbstractSerializable implements Optimizable {
+public class Parameter extends AbstractOptimizable {
 
 	public static final String PARAMETER_TAG = "Parameter";
 	public static final double MIN_VALUE_DEFAULT = -1E8;
 	public static final double MAX_VALUE_DEFAULT = 1E8;
 
-	private Optimizable parent = null;
 	private double value = 0.0;
 	private double error = 0.0;
 	private double maxValue = 0.0;
@@ -22,10 +21,8 @@ public class Parameter extends AbstractSerializable implements Optimizable {
 	private boolean enabled = true;
 	private ParameterCalculator calculator = null;
 
-	public Parameter(Optimizable parent, String label, double value, double min, double max, boolean optimizable, boolean enabled) {
-		setParentNode(parent);
-		//		if (parent != null && !(parent.getNodes().contains(this)))
-		//			parent.getNodes().add(this);
+	public Parameter(IBase parent, String label, double value, double min, double max, boolean optimizable, boolean enabled) {
+		super(parent);
 		setLabel(label);
 		setValue(value);
 		setMinValue(min);
@@ -34,15 +31,15 @@ public class Parameter extends AbstractSerializable implements Optimizable {
 		setEnabled(enabled);
 	}
 
-	public Parameter(Optimizable parent, String label, double value, double min_value, double max_value) {
+	public Parameter(IBase parent, String label, double value, double min_value, double max_value) {
 		this(parent, label, value, min_value, max_value, false, true);
 	}
 
-	public Parameter(Optimizable parent, String label, double value) {
+	public Parameter(IBase parent, String label, double value) {
 		this(parent, label, value, MIN_VALUE_DEFAULT, MAX_VALUE_DEFAULT, false, true);
 	}
 
-	public Parameter(Optimizable parent, String name) {
+	public Parameter(IBase parent, String name) {
 		this(parent, name, 0.0);
 	}
 
@@ -51,18 +48,12 @@ public class Parameter extends AbstractSerializable implements Optimizable {
 		return Collections.emptyList();
 	}
 
-	public Optimizable getParentNode() {
-		return parent;
-	}
-
-	public void setParentNode(Optimizable p) {
-		parent = p;
-	}
-
+	@ Override
 	public String getType() {
 		return PARAMETER_TAG;
 	}
 
+	@ Override
 	public void setType(String type) {
 		// do nothing
 	}
