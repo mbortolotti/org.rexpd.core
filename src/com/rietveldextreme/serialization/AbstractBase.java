@@ -67,4 +67,11 @@ public class AbstractBase implements IBase {
 		return parent;
 	}
 
+	@Override
+	public List<? extends Optimizable> getNodes() {
+		List<Optimizable> temp = new ArrayList<Optimizable>();
+		temp.addAll(nodes);
+		return temp;
+	}
+
 }
