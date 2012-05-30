@@ -4,42 +4,44 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.rietveldextreme.serialization.IBase;
+
 
 public class OptimizableCombo extends AbstractOptimizable {
 
-	private List<Optimizable> items = null;
-	private Optimizable activeItem = null;
+	private List<IBase> items = null;
+	private IBase activeItem = null;
 	
 	public OptimizableCombo() {
-		items = new ArrayList<Optimizable>();
+		items = new ArrayList<IBase>();
 	}
 
 	@Override
-	public List<? extends Optimizable> getNodes() {
+	public List<? extends IBase> getNodes() {
 		if (getActiveItem() == null)
 			return Collections.emptyList();
 		return getActiveItem().getNodes();
 	}
 
-	public List<Optimizable> getItems() {
+	public List<IBase> getItems() {
 		return items;
 	}
 
-	public void setActiveItem(Optimizable active) {
+	public void setActiveItem(IBase active) {
 		if (items.contains(active))
 			activeItem = active;
 	}
 
-	public Optimizable getActiveItem() {
+	public IBase getActiveItem() {
 		checkActiveItem();
 		return activeItem;
 	}
 
-	public void addItem(Optimizable item) {
+	public void addItem(IBase item) {
 		items.add(item);
 	}
 
-	public void removeItem(Optimizable item) {
+	public void removeItem(IBase item) {
 		items.remove(item);
 		checkActiveItem();
 	}

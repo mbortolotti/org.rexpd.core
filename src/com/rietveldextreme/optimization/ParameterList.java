@@ -3,6 +3,8 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rietveldextreme.serialization.IBase;
+
 public class ParameterList extends AbstractOptimizable {
 	
 	private List<Parameter> parameters = null;
@@ -53,8 +55,8 @@ public class ParameterList extends AbstractOptimizable {
 	}
 
 	@Override
-	public List<Optimizable> getNodes() {
-		List<Optimizable> nodes = new ArrayList<Optimizable>();
+	public List<? extends IBase> getNodes() {
+		List<IBase> nodes = new ArrayList<IBase>();
 		nodes.addAll(parameters);
 		return nodes;
 	}

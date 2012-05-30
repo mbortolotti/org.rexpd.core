@@ -1,8 +1,5 @@
 package com.rietveldextreme.optimization;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.rietveldextreme.serialization.AbstractBase;
 import com.rietveldextreme.serialization.IBase;
 

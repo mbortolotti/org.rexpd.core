@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.rietveldextreme.optimization.Optimizable;
-
 
 
 public class AbstractBase implements IBase {
@@ -15,7 +13,7 @@ public class AbstractBase implements IBase {
 	private String ID = null;
 	
 	IBase parent = null;
-	protected List<Optimizable> nodes = null;
+	protected List<IBase> nodes = null;
 	
 	public AbstractBase() {
 		this(null);
@@ -26,10 +24,10 @@ public class AbstractBase implements IBase {
 		createUID();
 		setType("");
 		setLabel("");
-		nodes = new ArrayList<Optimizable>();
+		nodes = new ArrayList<IBase>();
 	}
 	
-	public void addNode(Optimizable node) {
+	public void addNode(IBase node) {
 		nodes.add(node);
 	}
 	
@@ -68,8 +66,8 @@ public class AbstractBase implements IBase {
 	}
 
 	@Override
-	public List<? extends Optimizable> getNodes() {
-		List<Optimizable> temp = new ArrayList<Optimizable>();
+	public List<? extends IBase> getNodes() {
+		List<IBase> temp = new ArrayList<IBase>();
 		temp.addAll(nodes);
 		return temp;
 	}

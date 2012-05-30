@@ -3,6 +3,8 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rietveldextreme.serialization.IBase;
+
 public abstract class Optimizations {
 
 	/**
@@ -12,9 +14,9 @@ public abstract class Optimizations {
 	 * @param fullTree descend the full hyerarchy looking for parameters
 	 * @return
 	 */
-	public static List<Parameter> getParameters(Optimizable base, boolean fullTree) {
+	public static List<Parameter> getParameters(IBase base, boolean fullTree) {
 		List<Parameter> parameters = new ArrayList<Parameter>();
-		for(Optimizable child : base.getNodes()) {
+		for(IBase child : base.getNodes()) {
 			if (child instanceof Parameter)
 				parameters.add((Parameter) child);
 			if (fullTree)
@@ -23,7 +25,7 @@ public abstract class Optimizations {
 		return parameters;
 	}
 
-	public static List<Parameter> getParameters(Optimizable base) {
+	public static List<Parameter> getParameters(IBase base) {
 		return getParameters(base, true);
 	}
 
@@ -34,7 +36,7 @@ public abstract class Optimizations {
 	 * @param fullTree descend the full hyerarchy looking for optimizable parameters
 	 * @return
 	 */
-	public static List<Parameter> getOptimizableParameters(Optimizable base, boolean fullTree) {
+	public static List<Parameter> getOptimizableParameters(IBase base, boolean fullTree) {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		for(Parameter parameter : getParameters(base, fullTree))
 			if (parameter.isOptimizable())
@@ -42,7 +44,7 @@ public abstract class Optimizations {
 		return parameters;
 	}
 
-	public static List<Parameter> getOptimizableParameters(Optimizable base) {
+	public static List<Parameter> getOptimizableParameters(IBase base) {
 		return getOptimizableParameters(base, true);
 	}
 
@@ -53,10 +55,10 @@ public abstract class Optimizations {
 	 * @param fullTree check if the whole parameter hierarchy is optimizable
 	 * @return true if the given object is optimizable, false otherwise
 	 */
-	public static boolean isOptimizable(Optimizable base, boolean fullTree) {
+	public static boolean isOptimizable(IBase base, boolean fullTree) {
 		if (base instanceof Parameter)
 			return ((Parameter) base).isOptimizable() && ((Parameter) base).isEnabled();
-		for (Optimizable node : base.getNodes()) {
+		for (IBase node : base.getNodes()) {
 			if (fullTree) {
 				if (!isOptimizable(node, true) && isEnabled(node, false))
 					return false;
@@ -75,10 +77,10 @@ public abstract class Optimizations {
 	 * @param base the base obtimizable instance
 	 * @param optimizable optimization state
 	 */
-	public static void setOptimizable(Optimizable base, boolean optimizable) {
+	public static void setOptimizable(IBase base, boolean optimizable) {
 		if (base instanceof Parameter)
 			((Parameter) base).setOptimizable(optimizable);
-		for (Optimizable node : base.getNodes())
+		for (IBase node : base.getNodes())
 			setOptimizable(node, optimizable);
 	}
 	
@@ -89,10 +91,10 @@ public abstract class Optimizations {
 	 * @param fullTree check if the whole parameter hierarchy is enabled
 	 * @return true if the given object is enabled, false otherwise
 	 */
-	public static boolean isEnabled(Optimizable base, boolean fullTree) {
+	public static boolean isEnabled(IBase base, boolean fullTree) {
 		if (base instanceof Parameter)
 			return ((Parameter) base).isEnabled();
-		for (Optimizable node : base.getNodes()) {
+		for (IBase node : base.getNodes()) {
 			if (fullTree) {
 				if (!isEnabled(node, true))
 					return false;
@@ -111,10 +113,10 @@ public abstract class Optimizations {
 	 * @param base the base obtimizable instance
 	 * @param enabled enablement state
 	 */
-	public static void setEnabled(Optimizable base, boolean enabled) {
+	public static void setEnabled(IBase base, boolean enabled) {
 		if (base instanceof Parameter)
 			((Parameter) base).setEnabled(enabled);
-		for (Optimizable node : base.getNodes())
+		for (IBase node : base.getNodes())
 			setEnabled(node, enabled);
 	}
 
@@ -126,7 +128,7 @@ public abstract class Optimizations {
 	 * @param fullTree if true, descend the full ParameterNode tree
 	 * @return the parameter with the given name or null if it doesn't exist
 	 */
-	public static Parameter getParameterByName(Optimizable base, String name, boolean fullTree) {
+	public static Parameter getParameterByName(IBase base, String name, boolean fullTree) {
 		for(Parameter parameter : getParameters(base, fullTree))
 			if (parameter.getLabel().equals(name))
 				return parameter;
@@ -140,7 +142,7 @@ public abstract class Optimizations {
 	 * @param name the parameter's name
 	 * @return the parameter with the given name or null if it doesn't exist
 	 */
-	public static Parameter getParameterByName(Optimizable base, String name) {
+	public static Parameter getParameterByName(IBase base, String name) {
 		return getParameterByName(base, name, false);
 	}
 
@@ -148,13 +150,13 @@ public abstract class Optimizations {
 	 *  Search the parent ParameterNode for a child parameter with the given ID
 	 *  
 	 * @param base the parent node to search for the given parameter
-	 * @param ID the parameter's ID
+	 * @param id the parameter's ID
 	 * @param fullTree if true, descend the full ParameterNode tree
 	 * @return the parameter with the given ID or null if it doesn't exist
 	 */
-	public static Parameter getParameterByID(Optimizable base, String ID, boolean fullTree) {
+	public static Parameter getParameterByID(IBase base, String id, boolean fullTree) {
 		for(Parameter parameter : getParameters(base, fullTree))
-			if (parameter.getUID().equals(ID))
+			if (parameter.getUID().equals(id))
 				return parameter;
 		return null;
 	}

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: rex.core
 Bundle-SymbolicName: rex.core
 Bundle-Version: 0.6.3
-Bundle-Activator: com.rietveldextreme.core.Activator
+Bundle-Activator: rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.apache.commons.math;bundle-version="2.2.0"

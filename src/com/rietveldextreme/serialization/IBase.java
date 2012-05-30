@@ -2,8 +2,6 @@ package com.rietveldextreme.serialization;
 
 import java.util.List;
 
-import com.rietveldextreme.optimization.Optimizable;
-
 
 
 public interface IBase {
@@ -18,7 +16,6 @@ public interface IBase {
 	public void setUID(String id);
 	
 	public IBase getParentNode();
-	
-	public List<? extends Optimizable> getNodes();
+	public List<? extends IBase> getNodes();
 
 }

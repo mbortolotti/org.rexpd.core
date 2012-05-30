@@ -69,6 +69,7 @@ public class LevenbergMarquardtPJ extends OptimizationAlgorithm {
 			}
 			try {
 				optimizer.optimize(new FitnessFunctionAdapter(function), function.getTargets(), function.getWeights(), function.getParameterValues());
+				setCurrentStep(getCurrentStep() + 1);
 				List<Parameter> parameters = function.getParameters();
 				double[] errors = optimizer.guessParametersErrors();
 				for (int np = 0; np < parameters.size(); np++) {
@@ -76,9 +77,8 @@ public class LevenbergMarquardtPJ extends OptimizationAlgorithm {
 				}
 				results.setParameters(parameters);
 				results.setChiSquare(optimizer.getChiSquare());
-				log = log + "iteration " + (getCurrentStep() + 1) +  " - Chi square: " 
+				log = log + "iteration " + getCurrentStep() +  " - Chi square: " 
 						+ dfChiSquare.format(optimizer.getChiSquare()) + newline;
-				setCurrentStep(getCurrentStep() + 1);
 				notify(Events.CYCLE_COMPLETED);
 			} catch (OptimizationException e) {
 				// TODO Auto-generated catch block

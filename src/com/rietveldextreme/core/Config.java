@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
 
+import rcp.Activator;
+
 
 public class Config {
 

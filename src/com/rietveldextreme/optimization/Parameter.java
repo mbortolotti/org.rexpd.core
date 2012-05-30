@@ -3,11 +3,12 @@ package com.rietveldextreme.optimization;
 import java.util.Collections;
 import java.util.List;
 
+import com.rietveldextreme.serialization.AbstractBase;
 import com.rietveldextreme.serialization.IBase;
 
 
 
-public class Parameter extends AbstractOptimizable {
+public class Parameter extends AbstractBase {
 
 	public static final String PARAMETER_TAG = "Parameter";
 	public static final double MIN_VALUE_DEFAULT = -1E8;
@@ -44,7 +45,7 @@ public class Parameter extends AbstractOptimizable {
 	}
 
 	@ Override
-	public List<? extends Optimizable> getNodes() {
+	public List<? extends IBase> getNodes() {
 		return Collections.emptyList();
 	}
 
