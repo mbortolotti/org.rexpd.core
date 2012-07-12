@@ -25,18 +25,20 @@ public class Observable implements IObservable {
 	}
 
 	@Override
-	public void attach(Observer o) {
+	public void addObserver(Observer o) {
+	    if (o == null)
+            throw new NullPointerException();
 		if (!observers.contains(o))
 			observers.add(o);
 	}
 
 	@Override
-	public void detach(Observer o) {
+	public void deleteObserver(Observer o) {
 		observers.remove(o);
 	}
 
 	@Override
-	public void notify(Object message) {
+	public void notifyObservers(Object message) {
 		for (Iterator<Observer> it = observers.iterator(); it.hasNext();)
 			it.next().update(this, message);
 	}

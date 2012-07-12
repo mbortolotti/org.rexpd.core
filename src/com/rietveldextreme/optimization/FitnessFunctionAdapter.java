@@ -1,12 +1,12 @@
 package com.rietveldextreme.optimization;
 
-import org.apache.commons.math.FunctionEvaluationException;
-import org.apache.commons.math.analysis.DifferentiableMultivariateVectorialFunction;
-import org.apache.commons.math.analysis.MultivariateMatrixFunction;
 
-import static org.apache.commons.math.util.FastMath.abs;
+import org.apache.commons.math3.analysis.DifferentiableMultivariateVectorFunction;
+import org.apache.commons.math3.analysis.MultivariateMatrixFunction;
 
-public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorialFunction {
+import static org.apache.commons.math3.util.FastMath.abs;
+
+public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorFunction {
 
 	private FitnessContextVectorial fitnessContext = null;
 	private boolean centralDiffApproximation = false;
@@ -17,8 +17,7 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectori
 	}
 
 	@Override
-	public double[] value(double[] point) throws FunctionEvaluationException,
-	IllegalArgumentException {
+	public double[] value(double[] point) throws IllegalArgumentException {
 		return fitnessContext.getCalculatedValues(point);
 	}
 
@@ -27,8 +26,7 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectori
 		return new MultivariateMatrixFunction() {
 
 			@Override
-			public double[][] value(double[] point) throws FunctionEvaluationException,
-			IllegalArgumentException {
+			public double[][] value(double[] point) throws IllegalArgumentException {
 				if (centralDiffApproximation)
 					return jacobianCentralDiffApprox(point);
 				return jacobianForwardDiffApprox(point);

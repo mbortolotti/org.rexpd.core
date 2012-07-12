@@ -6,7 +6,7 @@ Bundle-Version: 0.6.3
 Bundle-Activator: rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.apache.commons.math;bundle-version="2.2.0"
+ org.apache.commons.math;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.rietveldextreme.core;uses:="org.eclipse.jface.resource,org.eclipse.ui.plugin,org.osgi.framework",

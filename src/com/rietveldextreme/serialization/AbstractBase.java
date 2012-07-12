@@ -6,11 +6,12 @@ import java.util.UUID;
 
 
 
-public class AbstractBase implements IBase {
+public abstract class AbstractBase implements IBase {
 	
 	private String type;
 	private String label;
 	private String ID = null;
+	private boolean enabled = true;
 	
 	IBase parent = null;
 	protected List<IBase> nodes = null;
@@ -31,28 +32,34 @@ public class AbstractBase implements IBase {
 		nodes.add(node);
 	}
 	
+	@Override
 	public String getType() {
 		return type;
 	}
 
+	@Override
 	public void setType(String t) {
 		type = t;
 	}
 
+	@Override
 	public String getLabel() {
 		return label;
 	}
 
+	@Override
 	public void setLabel(String l) {
 		label = l;
 	}
 	
+	@Override
 	public String getUID() {
 		if (ID == null || ID.equals(""))
 			createUID();
 		return ID;
 	}
 	
+	@Override
 	public void setUID(String uid) {
 		ID = uid;
 	}
@@ -60,7 +67,35 @@ public class AbstractBase implements IBase {
 	private void createUID() {
 		ID = UUID.randomUUID().toString();
 	}
+
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	@Override
+	public void setEnabled(boolean en) {
+		enabled = en;
+	}
 	
+	/**
+	 * @Override
+	public void setEnabled(boolean enabled) {
+		for (Pattern pattern : patterns)
+			pattern.setEnabled(enabled);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		for (Pattern pattern : patterns) {
+			if (!(pattern.isEnabled()))
+				return false;
+		}
+		return true;
+	}
+	 */
+	
+	@Override
 	public IBase getParentNode() {
 		return parent;
 	}

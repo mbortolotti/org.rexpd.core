@@ -13,12 +13,5 @@ public abstract class AbstractOptimizable extends AbstractBase implements Optimi
 	public AbstractOptimizable(IBase parent) {
 		super(parent);
 	}
-
-//	@Override
-//	public List<? extends Optimizable> getNodes() {
-//		List<Optimizable> temp = new ArrayList<Optimizable>();
-//		temp.addAll(nodes);
-//		return temp;
-//	}
-
+	
 }

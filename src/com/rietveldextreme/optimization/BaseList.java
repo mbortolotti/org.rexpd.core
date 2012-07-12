@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.rietveldextreme.serialization.AbstractBase;
 import com.rietveldextreme.serialization.IBase;
 
 
-public class OptimizableCombo extends AbstractOptimizable {
+public class BaseList extends AbstractBase {
 
 	private List<IBase> items = null;
 	private IBase activeItem = null;
 	
-	public OptimizableCombo() {
+	public BaseList() {
 		items = new ArrayList<IBase>();
 	}
 

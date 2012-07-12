@@ -19,7 +19,6 @@ public class Parameter extends AbstractBase {
 	private double maxValue = 0.0;
 	private double minValue = 0.0;
 	private boolean optimizable = false;
-	private boolean enabled = true;
 	private ParameterCalculator calculator = null;
 
 	public Parameter(IBase parent, String label, double value, double min, double max, boolean optimizable, boolean enabled) {
@@ -54,9 +53,11 @@ public class Parameter extends AbstractBase {
 		return PARAMETER_TAG;
 	}
 
-	@ Override
-	public void setType(String type) {
-		// do nothing
+	@Override
+	public void setEnabled(boolean en) {
+		super.setEnabled(en);
+		if (!isEnabled())
+			setOptimizable(false);
 	}
 
 	public double getValue() {
@@ -102,16 +103,6 @@ public class Parameter extends AbstractBase {
 	public void setOptimizable(boolean opt) {
 		if (isEnabled())
 			optimizable = opt;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean en) {
-		enabled = en;
-		if (!isEnabled())
-			setOptimizable(false);
 	}
 
 	public void setCalculator(ParameterCalculator calc) {
