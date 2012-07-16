@@ -19,6 +19,7 @@ public interface IBase {
 	public void setEnabled(boolean en);
 	
 	public IBase getParentNode();
+	public void addNode(IBase node);
 	public List<? extends IBase> getNodes();
 
 }

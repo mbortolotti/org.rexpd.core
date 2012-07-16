@@ -1,6 +1,6 @@
 package com.rietveldextreme.serialization;
 
-public interface BaseFactory {
+public interface AbstractFactory {
 	
 	public IBase create(String type);
 

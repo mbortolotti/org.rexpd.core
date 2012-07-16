@@ -1,11 +1,9 @@
-package com.rietveldextreme.optimization;
+package com.rietveldextreme.serialization;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.rietveldextreme.serialization.AbstractBase;
-import com.rietveldextreme.serialization.IBase;
 
 
 public class BaseList extends AbstractBase {

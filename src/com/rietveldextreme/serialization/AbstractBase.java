@@ -28,10 +28,6 @@ public abstract class AbstractBase implements IBase {
 		nodes = new ArrayList<IBase>();
 	}
 	
-	public void addNode(IBase node) {
-		nodes.add(node);
-	}
-	
 	@Override
 	public String getType() {
 		return type;
@@ -98,6 +94,11 @@ public abstract class AbstractBase implements IBase {
 	@Override
 	public IBase getParentNode() {
 		return parent;
+	}
+	
+	@Override
+	public void addNode(IBase node) {
+		nodes.add(node);
 	}
 
 	@Override
