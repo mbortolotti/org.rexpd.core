@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public abstract class AbstractBase implements IBase {
 	
-	private String type;
-	private String label;
+	private String type = "";
+	private String label = "";
 	private String ID = null;
 	private boolean enabled = true;
 	
@@ -23,11 +23,14 @@ public abstract class AbstractBase implements IBase {
 	public AbstractBase(IBase p) {
 		parent = p;
 		createUID();
-		setType("");
-		setLabel("");
 		nodes = new ArrayList<IBase>();
 	}
 	
+	@Override
+	public String getClassID() {
+		return getClass().getSimpleName();
+	}
+
 	@Override
 	public String getType() {
 		return type;

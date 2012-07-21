@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IBase {
 	
+	public String getClassID();
+	
 	public String getType();
 	public void setType(String type);
 	

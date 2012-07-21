@@ -3,9 +3,10 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rietveldextreme.serialization.AbstractBase;
 import com.rietveldextreme.serialization.IBase;
 
-public class ParameterList extends AbstractOptimizable {
+public class ParameterList extends AbstractBase {
 	
 	private List<Parameter> parameters = null;
 	private String parameterLabel = null;
@@ -14,7 +15,7 @@ public class ParameterList extends AbstractOptimizable {
 		this(null, "List", "Parameter", 1);
 	}
 	
-	public ParameterList(Optimizable parent, String listLabel, String baseLabel, int npar) {
+	public ParameterList(IBase parent, String listLabel, String baseLabel, int npar) {
 		super(parent);
 		setLabel(listLabel);
 		parameterLabel = baseLabel;

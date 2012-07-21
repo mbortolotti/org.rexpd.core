@@ -10,7 +10,7 @@ import com.rietveldextreme.serialization.IBase;
 
 public class Parameter extends AbstractBase {
 
-	public static final String PARAMETER_TAG = "Parameter";
+	public static final String PARAMETER_TYPE = "Parameter";
 	public static final double MIN_VALUE_DEFAULT = -1E8;
 	public static final double MAX_VALUE_DEFAULT = 1E8;
 
@@ -50,7 +50,7 @@ public class Parameter extends AbstractBase {
 
 	@ Override
 	public String getType() {
-		return PARAMETER_TAG;
+		return PARAMETER_TYPE;
 	}
 
 	@Override

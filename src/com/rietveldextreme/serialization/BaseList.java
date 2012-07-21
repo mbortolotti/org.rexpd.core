@@ -16,6 +16,11 @@ public class BaseList extends AbstractBase {
 	}
 
 	@Override
+	public String getClassID() {
+		return getClass().getSuperclass().getSimpleName();
+	}
+
+	@Override
 	public List<? extends IBase> getNodes() {
 		if (getActiveItem() == null)
 			return Collections.emptyList();
@@ -38,11 +43,6 @@ public class BaseList extends AbstractBase {
 
 	public void addItem(IBase item) {
 		items.add(item);
-	}
-
-	public void removeItem(IBase item) {
-		items.remove(item);
-		checkActiveItem();
 	}
 
 	private void checkActiveItem() {
