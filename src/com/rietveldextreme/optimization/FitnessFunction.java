@@ -4,11 +4,13 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rietveldextreme.serialization.IBase;
+
 
 @Deprecated
 public abstract class FitnessFunction implements FitnessContextVectorial {
 
-	private Optimizable optimizable;
+	private IBase optimizable;
 
 	private double[] X;
 
@@ -23,12 +25,12 @@ public abstract class FitnessFunction implements FitnessContextVectorial {
 	protected ArrayList<Double> iterations;
 	protected ArrayList<Double> values;
 	
-	public FitnessFunction(Optimizable opti) {
+	public FitnessFunction(IBase opti) {
 		optimizable = opti;
 	}
 	
 	@Deprecated
-	public void setOptimizable(Optimizable opti) {
+	public void setOptimizable(IBase opti) {
 		optimizable = opti;
 	}
 
