@@ -3,8 +3,8 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rietveldextreme.serialization.AbstractBase;
-import com.rietveldextreme.serialization.IBase;
+import com.rietveldextreme.base.AbstractBase;
+import com.rietveldextreme.base.IBase;
 
 public class ParameterList extends AbstractBase {
 	

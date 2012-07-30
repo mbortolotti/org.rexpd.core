@@ -18,7 +18,7 @@
  *
  */
 
-package com.rietveldextreme.serialization;
+package com.rietveldextreme.base;
 
 import java.io.File;
 import java.io.IOException;

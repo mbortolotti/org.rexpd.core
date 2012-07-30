@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rietveldextreme.serialization.IBase;
+import com.rietveldextreme.base.IBase;
 
 
 @Deprecated

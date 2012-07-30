@@ -9,9 +9,9 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.math;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: com.rietveldextreme.core;uses:="org.eclipse.jface.resource,org.eclipse.ui.plugin,org.osgi.framework",
+Export-Package: com.rietveldextreme.base;uses:="org.w3c.dom",
+ com.rietveldextreme.core;uses:="org.eclipse.jface.resource,org.eclipse.ui.plugin,org.osgi.framework",
  com.rietveldextreme.optimization;uses:="com.rietveldextreme.serialization",
- com.rietveldextreme.serialization;uses:="org.w3c.dom",
  com.rietveldextreme.utils.Observer
 Bundle-ClassPath: .,
  lib/junit-4.9.jar

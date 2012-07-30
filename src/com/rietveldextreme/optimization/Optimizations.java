@@ -3,7 +3,7 @@ package com.rietveldextreme.optimization;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rietveldextreme.serialization.IBase;
+import com.rietveldextreme.base.IBase;
 
 public abstract class Optimizations {
 

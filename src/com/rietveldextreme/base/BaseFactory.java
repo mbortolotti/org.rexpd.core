@@ -1,4 +1,4 @@
-package com.rietveldextreme.serialization;
+package com.rietveldextreme.base;
 
 public interface BaseFactory {
 	

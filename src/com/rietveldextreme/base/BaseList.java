@@ -1,4 +1,4 @@
-package com.rietveldextreme.serialization;
+package com.rietveldextreme.base;
 
 import java.util.ArrayList;
 import java.util.Collections;

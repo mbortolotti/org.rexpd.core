@@ -1,4 +1,4 @@
-package com.rietveldextreme.serialization;
+package com.rietveldextreme.base;
 
 import java.util.List;
 
@@ -26,11 +26,6 @@ public class BaseDynamic extends AbstractBase {
 		}
 		else
 			System.out.println("BaseDynamic: cannot instantiate factory object!");
-	}
-
-	@Deprecated
-	public void setBase(IBase base) {
-		baseInstance = base;
 	}
 
 	public String[] getItems() {
