@@ -10,7 +10,6 @@ public class Property extends AbstractBase {
 	
 	private String value = "";
 
-
 	public Property(IBase parent, String label, String value) {
 		super(parent);
 		setLabel(label);

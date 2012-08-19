@@ -4,9 +4,9 @@ Bundle-Name: rex.core
 Bundle-SymbolicName: rex.core
 Bundle-Version: 0.6.3
 Bundle-Activator: rcp.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.apache.commons.math;bundle-version="3.0.0"
+Require-Bundle: org.apache.commons.math;bundle-version="3.0.0";visibility:=reexport,
+ org.eclipse.core.runtime;bundle-version="3.8.0",
+ org.eclipse.ui;bundle-version="3.103.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.rietveldextreme.base;uses:="org.w3c.dom",

@@ -1,14 +1,17 @@
 package com.rietveldextreme.base;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
-
+// TODO Make use of this class to provide generic IBase objects list functionality
 public class BaseList extends AbstractBase {
+	
+	public static final String BASELIST_TYPE = "List";
 
 	private List<IBase> items = null;
+	
+	@Deprecated
 	private IBase activeItem = null;
 	
 	public BaseList() {
@@ -17,34 +20,35 @@ public class BaseList extends AbstractBase {
 
 	@Override
 	public String getClassID() {
-		return getClass().getSuperclass().getSimpleName();
+		return BASELIST_TYPE;
 	}
 
 	@Override
 	public List<? extends IBase> getNodes() {
-		if (getActiveItem() == null)
-			return Collections.emptyList();
-		return getActiveItem().getNodes();
+		return items;
 	}
 
 	public List<IBase> getItems() {
 		return items;
 	}
 
+	public void addItem(IBase item) {
+		items.add(item);
+	}
+
+	@Deprecated
 	public void setActiveItem(IBase active) {
 		if (items.contains(active))
 			activeItem = active;
 	}
 
+	@Deprecated
 	public IBase getActiveItem() {
 		checkActiveItem();
 		return activeItem;
 	}
 
-	public void addItem(IBase item) {
-		items.add(item);
-	}
-
+	@Deprecated
 	private void checkActiveItem() {
 		if (activeItem == null || !items.contains(activeItem))
 			if (items.size() != 0)
