@@ -3,14 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: rex.core
 Bundle-SymbolicName: rex.core
 Bundle-Version: 0.6.3
-Bundle-Activator: rcp.Activator
+Bundle-Activator: org.rexpd.core.Activator
 Require-Bundle: org.apache.commons.math;bundle-version="3.0.0";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.8.0",
  org.eclipse.ui;bundle-version="3.103.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: com.rietveldextreme.base;uses:="org.w3c.dom",
- com.rietveldextreme.optimization;uses:="com.rietveldextreme.serialization",
- com.rietveldextreme.utils.Observer
+Export-Package: org.rexpd.core.base;uses:="org.w3c.dom",
+ org.rexpd.core.observer,
+ org.rexpd.core.optimization;uses:="com.rietveldextreme.serialization",
+ org.rexpd.core.utils
 Bundle-ClassPath: .,
  lib/junit-4.9.jar
