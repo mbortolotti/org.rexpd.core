@@ -10,6 +10,7 @@ Require-Bundle: org.apache.commons.math;bundle-version="3.0.0";visibility:=reexp
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.rexpd.core.base;uses:="org.w3c.dom",
+ org.rexpd.core.math,
  org.rexpd.core.observer,
  org.rexpd.core.optimization;uses:="com.rietveldextreme.serialization",
  org.rexpd.core.utils
