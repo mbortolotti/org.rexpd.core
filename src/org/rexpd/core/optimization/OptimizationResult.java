@@ -4,20 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class OptimizationResults {
+public class OptimizationResult {
+
+	public enum EventType {
+
+		CYCLE_COMPLETED, 
+		ITERATION_PERFORMED, 
+		FITNESS_IMPROVED, 
+		OPTIMIZATION_STARTED, 
+		OPTIMIZATION_FINISHED,
+		OPTIMIZATION_INTERRUPTED;
+
+	}
 
 	private List<Parameter> parameters = null;
 	private double chiSquare = 0.0;
-	private String resultsLog = "";
+	private String message = "";
+	private EventType eventType = EventType.CYCLE_COMPLETED;
 
-	public OptimizationResults() {
+	public OptimizationResult(EventType type, String msg) {
+		eventType = type;
+		message = msg;
 		parameters = new ArrayList<Parameter>();
 	}
+	
+	public OptimizationResult() {
+		this(EventType.CYCLE_COMPLETED, "");
+	}
 
-	public OptimizationResults(List<Parameter> params, double chisq, String log) {
-		setParameters(params);
-		setChiSquare(chisq);
-		setResultsLog(log);
+	public EventType getType() {
+		return eventType;
+	}
+
+	public void setType(EventType type) {
+		eventType = type;
 	}
 
 	public List<Parameter> getParameters() {
@@ -45,12 +65,12 @@ public class OptimizationResults {
 		chiSquare = chisq;
 	}
 
-	public String getResultsLog() {
-		return resultsLog;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setResultsLog(String log) {
-		resultsLog = log;
+	public void setMessage(String msg) {
+		message = msg;
 	}
 
 }

@@ -3,22 +3,27 @@ package org.rexpd.core.optimization;
 
 import org.apache.commons.math3.analysis.DifferentiableMultivariateVectorFunction;
 import org.apache.commons.math3.analysis.MultivariateMatrixFunction;
+import org.rexpd.core.observer.MessageService;
+import org.rexpd.core.optimization.OptimizationResult.EventType;
 
 import static org.apache.commons.math3.util.FastMath.abs;
 
-public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorFunction {
+public class OptimizationAnalysisAdapter implements DifferentiableMultivariateVectorFunction {
 
-	private FitnessContextVectorial fitnessContext = null;
+	private OptimizationAnalysis optimizationAnalysis = null;
 	private boolean centralDiffApproximation = false;
 	private double eps = 1E-8;
 
-	public FitnessFunctionAdapter(FitnessContextVectorial context) {
-		fitnessContext = context;
+	public OptimizationAnalysisAdapter(OptimizationAnalysis analysis) {
+		optimizationAnalysis = analysis;
 	}
 
 	@Override
 	public double[] value(double[] point) throws IllegalArgumentException {
-		return fitnessContext.getCalculatedValues(point);
+		optimizationAnalysis.setParameterValues(point);
+		double values[] = optimizationAnalysis.getCalculatedValues();
+		MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration performed"));
+		return values;
 	}
 
 	@Override
@@ -36,8 +41,9 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorF
 	
 	private double[][] jacobianForwardDiffApprox(double[] point) {
 		int n_par = point.length;
-		int n_obs = fitnessContext.getTargets().length;
-		double[] y_p = fitnessContext.getCalculatedValues(point);
+		int n_obs = optimizationAnalysis.getTargets().length;
+		optimizationAnalysis.setParameterValues(point);
+		double[] y_p = optimizationAnalysis.getCalculatedValues();
 		final double[][] jacobian = new double[n_obs][n_par];
 		for (int np = 0; np < n_par; np++) {
 			double temp = point[np];
@@ -45,7 +51,8 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorF
 			if (step == 0.0)
 				step = eps;
 			point[np] += step;
-			double[] y_p_h = fitnessContext.getCalculatedValues(point);
+			optimizationAnalysis.setParameterValues(point);
+			double[] y_p_h = optimizationAnalysis.getCalculatedValues();
 			for (int nx = 0; nx < n_obs; nx++) {
 				jacobian[nx][np] = (y_p_h[nx] - y_p[nx]) / step;
 			}
@@ -56,7 +63,7 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorF
 
 	private double[][] jacobianCentralDiffApprox(double[] point) {
 		int n_par = point.length;
-		int n_obs = fitnessContext.getTargets().length;
+		int n_obs = optimizationAnalysis.getTargets().length;
 		final double[][] jacobian = new double[n_obs][n_par];
 		for (int np = 0; np < n_par; np++) {
 			double temp = point[np];
@@ -64,9 +71,11 @@ public class FitnessFunctionAdapter implements DifferentiableMultivariateVectorF
 			if (step == 0.0)
 				step = eps;
 			point[np] -= step;
-			double[] y_m_h = fitnessContext.getCalculatedValues(point);
+			optimizationAnalysis.setParameterValues(point);
+			double[] y_m_h = optimizationAnalysis.getCalculatedValues();
 			point[np] += step;
-			double[] y_p_h = fitnessContext.getCalculatedValues(point);
+			optimizationAnalysis.setParameterValues(point);
+			double[] y_p_h = optimizationAnalysis.getCalculatedValues();
 			
 			for (int nx = 0; nx < n_obs; nx++) {
 				jacobian[nx][np] = (y_p_h[nx] - y_m_h[nx]) / 2 / step;

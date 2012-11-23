@@ -1,20 +1,7 @@
 package org.rexpd.core.optimization;
 
-import org.rexpd.core.observer.Observable;
-import org.rexpd.core.optimization.OptimizationProblem;
 
-
-
-
-public abstract class OptimizationAlgorithm extends Observable {
-
-	public enum Events {
-		CYCLE_COMPLETED, 
-		ITERATION_PERFORMED, 
-		FITNESS_IMPROVED, 
-		OPTIMIZATION_STARTED, 
-		OPTIMIZATION_FINISHED
-	}
+public abstract class OptimizationAlgorithm {
 
 	private int iterationsPerStep = 50;
 	private int stepsNumber = 5;
@@ -24,7 +11,7 @@ public abstract class OptimizationAlgorithm extends Observable {
 
 	public abstract String getName();
 
-	public abstract OptimizationResults minimize(OptimizationProblem p);
+	public abstract OptimizationResult minimize(OptimizationAnalysis p);
 
 	public int getStepsNumber() {
 		return stepsNumber;
