@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: rex.core
+Bundle-Name: ReX Core Library
 Bundle-SymbolicName: org.rexpd.core
-Bundle-Version: 0.6.3
+Bundle-Version: 0.7.0
 Require-Bundle: org.apache.commons.math;bundle-version="3.0.0";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.8.0"
 Bundle-ActivationPolicy: lazy
@@ -14,3 +14,4 @@ Export-Package: org.rexpd.core.base;uses:="org.w3c.dom",
  org.rexpd.core.utils
 Bundle-ClassPath: .,
  lib/junit-4.9.jar
+Bundle-Vendor: rexpd.org

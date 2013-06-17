@@ -23,6 +23,7 @@ public interface IBase {
 	public IBase getParentNode();
 	public List<? extends IBase> getNodes();
 	public void addNode(IBase node);
+	
 //	public boolean canAddNode(IBase node);
 //	public void deleteNode(IBase node);
 //	public boolean canDeleteNode(IBase node);

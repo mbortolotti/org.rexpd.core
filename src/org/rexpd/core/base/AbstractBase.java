@@ -12,6 +12,7 @@ public abstract class AbstractBase implements IBase {
 	private String label = "";
 	private String ID = null;
 	private boolean enabled = true;
+	private boolean visible = true; // TODO - consider pulling up to IBase
 	
 	IBase parent = null;
 	protected List<IBase> nodes = null;
@@ -109,6 +110,14 @@ public abstract class AbstractBase implements IBase {
 		List<IBase> temp = new ArrayList<IBase>();
 		temp.addAll(nodes);
 		return temp;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean vis) {
+		visible = vis;
 	}
 
 }
