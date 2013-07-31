@@ -43,6 +43,16 @@ public class Parameter extends AbstractBase {
 	public Parameter(IBase parent, String name) {
 		this(parent, name, 0.0);
 	}
+	
+	public Parameter(Parameter toClone) {
+		this(toClone.getParentNode(), 
+				toClone.getLabel(), 
+				toClone.getValue(), 
+				toClone.getMinValue(), 
+				toClone.getMaxValue(), 
+				toClone.isOptimizable(), 
+				toClone.isEnabled());
+	}
 
 	@ Override
 	public List<? extends IBase> getNodes() {
@@ -116,7 +126,7 @@ public class Parameter extends AbstractBase {
 
 	public void unsetCalculator() {
 		calculator = null;
-	}
+	}	
 
 }
 

@@ -1,5 +1,7 @@
 package org.rexpd.core.optimization;
 
+import java.util.List;
+
 import org.rexpd.core.base.Analysis;
 
 
@@ -10,6 +12,7 @@ public abstract class OptimizationAnalysis extends Analysis {
 
 	public OptimizationAnalysis () {
 		method = new LevenbergMarquardtPJ();
+		//method = new SimulatedAnnealing();
 	}
 	
 	public abstract double[] getTargets();
@@ -35,6 +38,20 @@ public abstract class OptimizationAnalysis extends Analysis {
 
 	public OptimizationResult getOptimizationResults() {
 		return results;
+	}
+
+	public double[] getParameterValues() {
+		List<Parameter> parameters = Optimizations.getOptimizableParameters(this);
+		double[] values = new double[parameters.size()];
+		for (int np = 0; np < parameters.size(); np++)
+			values[np] = parameters.get(np).getValue();
+		return values;
+	}
+
+	public void setParameterValues(double[] values) {
+		List<Parameter> parameters = Optimizations.getOptimizableParameters(this);
+		for (int np = 0; np < parameters.size(); np++)
+			parameters.get(np).setValue(values[np]);
 	}
 
 }

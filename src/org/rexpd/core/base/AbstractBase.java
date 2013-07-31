@@ -68,32 +68,24 @@ public abstract class AbstractBase implements IBase {
 		ID = UUID.randomUUID().toString();
 	}
 
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean vis) {
+		visible = vis;
+	}
+
 	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
 
 	@Override
+	// TODO: recursively enable/disable sub-nodes
 	public void setEnabled(boolean en) {
 		enabled = en;
 	}
-	
-	/**
-	 * @Override
-	public void setEnabled(boolean enabled) {
-		for (Pattern pattern : patterns)
-			pattern.setEnabled(enabled);
-	}
-
-	@Override
-	public boolean isEnabled() {
-		for (Pattern pattern : patterns) {
-			if (!(pattern.isEnabled()))
-				return false;
-		}
-		return true;
-	}
-	 */
 	
 	@Override
 	public IBase getParentNode() {
@@ -110,14 +102,6 @@ public abstract class AbstractBase implements IBase {
 		List<IBase> temp = new ArrayList<IBase>();
 		temp.addAll(nodes);
 		return temp;
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean vis) {
-		visible = vis;
 	}
 
 }
