@@ -1,6 +1,6 @@
 package org.rexpd.core.optimization.simulatedannealing;
 
-public class AnnealingScheduleLinear extends AnnealingSchedule1 {
+public class AnnealingScheduleLinear extends AnnealingSchedule {
 
 	@Override
 	public double getTemperature(double t0, double tn, int i, int n) {

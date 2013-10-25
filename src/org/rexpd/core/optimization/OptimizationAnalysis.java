@@ -12,7 +12,6 @@ public abstract class OptimizationAnalysis extends Analysis {
 
 	public OptimizationAnalysis () {
 		method = new LevenbergMarquardtPJ();
-		//method = new SimulatedAnnealing();
 	}
 	
 	public abstract double[] getTargets();
@@ -52,6 +51,11 @@ public abstract class OptimizationAnalysis extends Analysis {
 		List<Parameter> parameters = Optimizations.getOptimizableParameters(this);
 		for (int np = 0; np < parameters.size(); np++)
 			parameters.get(np).setValue(values[np]);
+	}
+	
+	public void setSolution(Solution solution) {
+		setParameterValues(solution.getParameterValues());
+		update();
 	}
 
 }

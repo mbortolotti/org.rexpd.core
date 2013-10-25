@@ -25,7 +25,7 @@ public class LevenbergMarquardtPJ extends OptimizationAlgorithm {
 	private double threshold = Precision.SAFE_MIN;	/** Desired threshold for QR ranking */
 
 	public LevenbergMarquardtPJ() {
-		setIterationsPerStep(DEFAULT_ITERATIONS);
+		setIterations(DEFAULT_ITERATIONS);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class LevenbergMarquardtPJ extends OptimizationAlgorithm {
 					parTolerance, 
 					orthoTolerance,
 					threshold);
-			int maxEval = getIterationsPerStep();
+			int maxEval = getIterations();
 
 			optimizer.optimize(maxEval, new OptimizationAnalysisAdapter(problem), problem.getTargets(), problem.getWeights(), problem.getParameterValues());
 			
@@ -70,7 +70,7 @@ public class LevenbergMarquardtPJ extends OptimizationAlgorithm {
 				parameters.get(np).setError(errors[np]);
 			}
 			results.setParameters(parameters);
-			results.setChiSquare(optimizer.getChiSquare());
+			results.setFitness(optimizer.getChiSquare());
 			results.setType(EventType.OPTIMIZATION_FINISHED);
 			results.setMessage("Optimization finished!");
 			

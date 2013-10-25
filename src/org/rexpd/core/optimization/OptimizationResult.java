@@ -7,7 +7,7 @@ import java.util.List;
 public class OptimizationResult {
 
 	public enum EventType {
-
+		OPTIMIZATION_MESSAGE,
 		CYCLE_COMPLETED, 
 		ITERATION_PERFORMED, 
 		FITNESS_IMPROVED, 
@@ -18,7 +18,8 @@ public class OptimizationResult {
 	}
 
 	private List<Parameter> parameters = null;
-	private double chiSquare = 0.0;
+	private Solution solution = null;
+	private double fitness = 0.0;
 	private String message = "";
 	private EventType eventType = EventType.CYCLE_COMPLETED;
 
@@ -57,12 +58,12 @@ public class OptimizationResult {
 		}
 	}
 
-	public double getChiSquare() {
-		return chiSquare;
+	public double getFitness() {
+		return fitness;
 	}
 
-	public void setChiSquare(double chisq) {
-		chiSquare = chisq;
+	public void setFitness(double fit) {
+		fitness = fit;
 	}
 
 	public String getMessage() {

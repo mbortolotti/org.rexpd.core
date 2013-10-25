@@ -3,9 +3,8 @@ package org.rexpd.core.optimization;
 
 public abstract class OptimizationAlgorithm {
 
-	private int iterationsPerStep = 50;
-	private int stepsNumber = 5;
-	private int currentStep = 0;
+	private int iterations = 10;
+	private int currentIteration = 0;
 	private boolean paramLimitsEnabled = false;
 	private boolean stopRequested = false;
 
@@ -13,28 +12,20 @@ public abstract class OptimizationAlgorithm {
 
 	public abstract OptimizationResult minimize(OptimizationAnalysis p);
 
-	public int getStepsNumber() {
-		return stepsNumber;
-	}
-
-	public void setStepsNumber(int steps) {
-		stepsNumber = steps;
-	}
-
-	public int getCurrentStep() {
-		return currentStep;
+	public int getCurrentIteration() {
+		return currentIteration;
 	}
 	
-	public void setCurrentStep(int step) {
-		currentStep = step;
+	public void setCurrentIteration(int iteration) {
+		currentIteration = iteration;
 	}
 
-	public int getIterationsPerStep() {
-		return iterationsPerStep;
+	public int getIterations() {
+		return iterations;
 	}
 
-	public void setIterationsPerStep(int iterations) {
-		iterationsPerStep = iterations;
+	public void setIterations(int iter) {
+		iterations = iter;
 	}
 	
 	public void enableParamLimits(boolean enable) {

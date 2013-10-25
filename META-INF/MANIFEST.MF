@@ -11,6 +11,7 @@ Export-Package: org.rexpd.core.base;uses:="org.w3c.dom",
  org.rexpd.core.math,
  org.rexpd.core.observer,
  org.rexpd.core.optimization;uses:="com.rietveldextreme.serialization",
+ org.rexpd.core.optimization.simulatedannealing,
  org.rexpd.core.utils
 Bundle-ClassPath: .,
  lib/junit-4.9.jar

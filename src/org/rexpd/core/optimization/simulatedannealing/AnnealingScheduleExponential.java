@@ -1,6 +1,6 @@
 package org.rexpd.core.optimization.simulatedannealing;
 
-public class AnnealingScheduleExponential extends AnnealingSchedule1 {
+public class AnnealingScheduleExponential extends AnnealingSchedule {
 	
 	private double alpha = 0.5;
 

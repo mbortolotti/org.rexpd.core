@@ -4,29 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.rexpd.core.optimization.Parameter;
+
 
 
 public abstract class AbstractBase implements IBase {
-	
+
 	private String type = "";
 	private String label = "";
 	private String ID = null;
 	private boolean enabled = true;
 	private boolean visible = true; // TODO - consider pulling up to IBase
-	
+
 	IBase parent = null;
 	protected List<IBase> nodes = null;
-	
+
 	public AbstractBase() {
 		this(null);
 	}
-	
+
 	public AbstractBase(IBase p) {
 		parent = p;
 		createUID();
 		nodes = new ArrayList<IBase>();
 	}
-	
+
 	@Override
 	public String getClassID() {
 		return getClass().getSimpleName();
@@ -51,19 +53,19 @@ public abstract class AbstractBase implements IBase {
 	public void setLabel(String l) {
 		label = l;
 	}
-	
+
 	@Override
 	public String getUID() {
 		if (ID == null || ID.equals(""))
 			createUID();
 		return ID;
 	}
-	
+
 	@Override
 	public void setUID(String uid) {
 		ID = uid;
 	}
-	
+
 	private void createUID() {
 		ID = UUID.randomUUID().toString();
 	}
@@ -82,16 +84,19 @@ public abstract class AbstractBase implements IBase {
 	}
 
 	@Override
-	// TODO: recursively enable/disable sub-nodes
 	public void setEnabled(boolean en) {
 		enabled = en;
+		/** Recursively set enablement state for all sub-nodes but parameters **/
+		for (IBase node : getNodes())
+			if (!(node instanceof Parameter))
+				node.setEnabled(en);
 	}
-	
+
 	@Override
 	public IBase getParentNode() {
 		return parent;
 	}
-	
+
 	@Override
 	public void addNode(IBase node) {
 		nodes.add(node);

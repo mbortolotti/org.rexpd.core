@@ -1,13 +1,18 @@
 
 package org.rexpd.core.optimization.simulatedannealing;
 
+import java.util.List;
+
 import org.apache.commons.math3.random.MersenneTwister;
+import org.rexpd.core.observer.MessageService;
 import org.rexpd.core.optimization.OptimizationAlgorithm;
 import org.rexpd.core.optimization.OptimizationAnalysis;
 import org.rexpd.core.optimization.OptimizationResult;
+import org.rexpd.core.optimization.Optimizations;
 import org.rexpd.core.optimization.Parameter;
 
 import org.rexpd.core.optimization.Solution;
+import org.rexpd.core.optimization.OptimizationResult.EventType;
 
 
 
@@ -15,39 +20,38 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 
 	public static final String SIMULATED_ANNEALING = "Simulated Annealing";
 
-	private OptimizationAnalysis problem = null;
+	//private OptimizationAnalysis problem = null;
 	private MersenneTwister randomizer = null;
-	//private AnnealingSchedule coolingSchedule = AnnealingSchedule.GEOMETRIC;
 
-	private AnnealingSchedule1 annealingSchedule = new AnnealingScheduleGeometric();
+	private AnnealingSchedule annealingSchedule = new AnnealingScheduleGeometric();
 
-	//protected int nParam;
-	private double startWSS;
 	int currentParameter = 0;
-
-	//private double[] currSolution;			// current solution parameters
-	//private double[] bestSolution;    		// best solution parameters
-
-	//protected float[] lParamBound;
-	//protected float[] uParamBound;
 
 	private double currFitness;
 	private double bestFitness;
 
-	private static final int DEFAULT_STEPS = 10;
-	private static final int DEFAULT_ITER = 10000;
+	private static final int DEFAULT_ITERATIONS = 10;
+	private static final int DEFAULT_POPULATION = 10000;
 
-	//private double temp_const;
-	private double temp_start;
-	private double temp_end;
-	private boolean startRandom;
+	private static final int DEFAULT_PARAMETER_MULTIPLIER = 500;
+
+	private static final double DEFAULT_T0 = 1E3;
+	private static final double DEFAULT_T1 = 1E-8;
+	private static final double DEFAULT_ACCEPTANCE_START = 0.8;
+	private static final double DEFAULT_ACCEPTANCE_END = 1E-16;
+
+	private int population;
+	private double tempStart;
+	private double tempEnd;
+	private boolean startRandom = true;
+	private boolean autoCalibration = true;
 
 	public SimulatedAnnealing() {
 		randomizer = new MersenneTwister();
-		setStepsNumber(DEFAULT_STEPS);
-		setIterationsPerStep(DEFAULT_ITER);
-		setTStart(3000);
-		setTEnd(0.000001);
+		setIterations(DEFAULT_ITERATIONS);
+		setPopulation(DEFAULT_POPULATION);
+		setTStart(DEFAULT_T0);
+		setTEnd(DEFAULT_T1);
 		enableParamLimits(true);
 	}	
 
@@ -57,78 +61,90 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 	}
 
 	@Override
-	public OptimizationResult minimize(OptimizationAnalysis p) {
+	public OptimizationResult minimize(OptimizationAnalysis problem) {
 
-		problem = p;
+		OptimizationResult results = new OptimizationResult();
+		List<Parameter> parameters = Optimizations.getOptimizableParameters(problem);
 
-		OptimizationResult result = new OptimizationResult();
-		
-
-		System.out.println("Temperature steps : " + getStepsNumber());
-		System.out.println("Trial size : " + getIterationsPerStep());
-
-		getAnnealingSchedule().initSchedule(getTStart(), getTEnd(), getStepsNumber());
+		if (parameters.size() < 1) {
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "No optimizable parameters selected!"));
+			return results;
+		}
 
 		Solution startSolution = new Solution(problem);
+		bestFitness = getScalarFitness(problem, startSolution);
 		currentParameter = 0;
 
-		double T0 = calibrateTemperature(problem, 0.8, 5000, 5);
-		System.out.println("Starting temperature T0 = " + T0);
-		double T1 = calibrateTemperature(problem, 1E-16, 5000, 5);
-		System.out.println("final temperature T1 = " + T1);
-
-		bestFitness = getScalarFitness(startSolution);
-
 		if (getInitRandom()) {
-			/** startSolution = mutateSolution(getTStart(), startSolution, lowerLimits, upperLimits);
-			problem.setParameterValues(startSolution); **/
-
 			startSolution = randomize(startSolution);
-			//problem.setParameterValues(startSolution.getParameterValues());
 		}
-		
+
 		Solution currentSolution = startSolution;
 		Solution bestSolution = startSolution;
 
-		currFitness = getScalarFitness(startSolution);
+		currFitness = getScalarFitness(problem, startSolution);
 
 		System.out.println("currFitness: " + currFitness);
 
+		MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_STARTED, "Starting Simulated Annealing..."));
+
+		if (getAutoCalibration()) {
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Performing automatic calibration..."));
+			int populationSize = startSolution.getParameters().size() * DEFAULT_PARAMETER_MULTIPLIER;
+			double T0 = calibrateTemperature(problem, DEFAULT_ACCEPTANCE_START, populationSize / 10, 5);
+			double T1 = calibrateTemperature(problem, DEFAULT_ACCEPTANCE_END, populationSize / 10, 5);
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "...done!"));
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Population size = " + populationSize));
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Initial temperature T0 = " + T0));
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Final temperature T1 = " + T1));
+			setPopulation(populationSize);
+			setTStart(T0);
+			setTEnd(T1);
+		}
+
+		getAnnealingSchedule().initSchedule(getTStart(), getTEnd(), getIterations());
+
 		while (getAnnealingSchedule().hasNext()) {
 			double T = getAnnealingSchedule().nextValue();
+			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration performed"));
 			//System.out.println("Current temperature: " + T);
-			for (int ni = 0; ni < getIterationsPerStep(); ni++) {
-				if (hasStopRequested())
-					return result;
-				
+			for (int ni = 0; ni < getPopulation(); ni++) {
+				if (hasStopRequested()) {
+					MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "Optimization interrupted by user"));
+					return results;
+				}
+
 				Solution newSolution = mutate(currentSolution);
-				//problem.setParameterValues(newSolution.getParameterValues());
-				double newFitness = getScalarFitness(newSolution);
+				double newFitness = getScalarFitness(problem, newSolution);
 				double prob = Math.exp( - (newFitness - currFitness) / (T));
 				double random = getRandomValue();
 
 				if (newFitness < currFitness || prob > random) {
-					for (Parameter parameter : newSolution.getParameters()) 
-						System.out.print(parameter.getLabel() + " = " + parameter.getValue() + "; ");
-					System.out.println();
-					System.out.println("currFitness = " + currFitness + "; newFitness = " + newFitness);
+					//for (Parameter parameter : newSolution.getParameters()) 
+					//	System.out.print(parameter.getLabel() + " = " + parameter.getValue() + "; ");
+					//System.out.println();
+					//System.out.println("currFitness = " + currFitness + "; newFitness = " + newFitness);
 
 					currFitness = newFitness;
 					currentSolution = newSolution;
 					if (currFitness < bestFitness) {
-						System.out.println("fitness improved :" + newFitness);
 						bestFitness = currFitness;
 						bestSolution = currentSolution;
 					}
 				}
 			}
+			problem.setSolution(bestSolution);
 		}
-		System.out.println("SA run finished");
-		System.out.println("bestFitness = " + bestFitness);
 
+		problem.setSolution(bestSolution);
 
-		//startSolutionLoop();
-		return new OptimizationResult();
+		results.setParameters(bestSolution.getParameters());
+		results.setFitness(bestFitness);
+		results.setType(EventType.OPTIMIZATION_FINISHED);
+		results.setMessage("Optimization finished!");
+		MessageService.getInstance().notifyObservers(results);
+
+		return results;
 	}
 
 	private double getRandomValue() {
@@ -140,7 +156,7 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 	}
 
 	private double calibrateTemperature(OptimizationAnalysis problem, double acceptance, int ntrials, int niter) {
-		
+
 		Solution start = new Solution(problem);
 
 		double E0array[] = new double[ntrials];
@@ -150,9 +166,9 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		/** Generate the sets of trial states and their neighbors **/
 		for (int i = 0; i < ntrials; i++) {
 			Solution trialState = randomize(start);
-			double E0 = getScalarFitness(trialState);
+			double E0 = getScalarFitness(problem, trialState);
 			Solution neighbState = mutate(trialState);
-			double E1 = getScalarFitness(neighbState);
+			double E1 = getScalarFitness(problem, neighbState);
 			/** assume positive transition probabilities **/
 			E0array[i] = Math.min(E0, E1);
 			E1array[i] = Math.max(E0, E1);
@@ -161,7 +177,7 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		/** Approximate starting temperature **/
 		double Ti = - deltaESum / ntrials / Math.log(acceptance);
 		double Ti_1 = 0;
-		
+
 		for (int ni = 0; ni < niter; ni++) {
 			double pi = probability(E0array, E1array, Ti);
 			if (pi < 1E-16)
@@ -216,7 +232,7 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		return newSolution;
 	}
 
-	private double getScalarFitness(Solution solution) {
+	private double getScalarFitness(OptimizationAnalysis problem, Solution solution) {
 		problem.setParameterValues(solution.getParameterValues());
 		double scalarFitness = 0.0;
 		double[] values = problem.getCalculatedValues();
@@ -226,31 +242,40 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 			double delta = (values[nv] - targets[nv]) / weights[nv];
 			scalarFitness += delta * delta;
 		}
-		return Math.sqrt(scalarFitness) / values.length;
+		//return Math.sqrt(scalarFitness) / values.length;
+		return Math.sqrt(scalarFitness);
 	}
 
-	public AnnealingSchedule1 getAnnealingSchedule() {
+	public AnnealingSchedule getAnnealingSchedule() {
 		return annealingSchedule;
 	}
 
-	public void setAnnealingSchedule(AnnealingSchedule1 schedule) {
+	public void setAnnealingSchedule(AnnealingSchedule schedule) {
 		annealingSchedule = schedule;
 	}
 
+	public int getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(int pop) {
+		population = pop;
+	}
+
 	public double getTStart() {
-		return temp_start;
+		return tempStart;
 	}
 
 	public void setTStart(double TStart) {
-		temp_start = TStart;
+		tempStart = TStart;
 	}
 
 	public double getTEnd() {
-		return temp_end;
+		return tempEnd;
 	}
 
 	public void setTEnd(double TEnd) {
-		temp_end = TEnd;
+		tempEnd = TEnd;
 	}
 
 	public boolean getInitRandom() {
@@ -259,6 +284,14 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 
 	public void setInitRandom(boolean random) {
 		startRandom = random;
+	}
+
+	public boolean getAutoCalibration() {
+		return autoCalibration;
+	}
+
+	public void setAutoCalibration(boolean autoCalib) {
+		autoCalibration = autoCalib;
 	}
 
 

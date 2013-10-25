@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 public class ParameterCalculatorLinear implements ParameterCalculator {
 
+	private double constantTerm = 0.0;
 	private Map<Parameter, Double> parameters;
 
 	public double getValue() {
