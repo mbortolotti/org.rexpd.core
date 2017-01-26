@@ -6,12 +6,12 @@
  */
 package org.rexpd.core.observer;
 
-
 /**
  * @author mauro
  *
- * The IObservable interface should be implemented by classes that participate
- * into the "Observer" pattern as the sources of property changes
+ *         The IObservable interface should be implemented by classes that
+ *         participate into the "Observer" pattern as the sources of property
+ *         changes
  *
  * @version $Revision: 1.0 $, $Date: 3-giu-2004 17.32.18 $
  * @author mauro
@@ -19,9 +19,11 @@ package org.rexpd.core.observer;
  */
 
 public interface IObservable {
-	
+
 	public void addObserver(Observer o);
-	public void deleteObserver(Observer o);
-	public void notifyObservers(Object message);
-	
+
+	public void removeObserver(Observer o);
+
+	public void notifyObservers(Message msg);
+
 }

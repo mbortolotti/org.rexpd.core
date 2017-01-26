@@ -1,9 +1,10 @@
 package org.rexpd.core.optimization.simulatedannealing;
 
-import org.rexpd.core.optimization.OptimizationAnalysis;
+import org.rexpd.core.base.AbstractBase;
+import org.rexpd.core.optimization.OptimizationContext;
 import org.rexpd.core.optimization.Parameter;
 
-public class TestProblemBeale extends OptimizationAnalysis {
+public class TestProblemBeale extends AbstractBase implements OptimizationContext {
 	
 	Parameter X = null;
 	Parameter Y = null;
@@ -34,17 +35,6 @@ public class TestProblemBeale extends OptimizationAnalysis {
 		double c = (1.625 - x + x*y*y);
 		double value[] = { a*a + b*b + c*c };
 		return value;
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean canRun() {
-		return true;
 	}
 
 }

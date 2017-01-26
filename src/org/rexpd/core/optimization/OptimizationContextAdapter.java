@@ -3,36 +3,51 @@ package org.rexpd.core.optimization;
 
 import static org.apache.commons.math3.util.FastMath.abs;
 
-import org.apache.commons.math3.analysis.DifferentiableMultivariateVectorFunction;
 import org.apache.commons.math3.analysis.MultivariateMatrixFunction;
+import org.apache.commons.math3.analysis.MultivariateVectorFunction;
+import org.apache.commons.math3.fitting.leastsquares.MultivariateJacobianFunction;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.util.Pair;
 import org.rexpd.core.optimization.OptimizationResult.EventType;
 
-@Deprecated
-public class OptimizationAnalysisAdapter implements DifferentiableMultivariateVectorFunction {
+public class OptimizationContextAdapter implements MultivariateJacobianFunction {
 
 	private OptimizationContext optimizationContext = null;
 	private boolean centralDiffApproximation = false;
 	private double eps = 1E-8;
-	private int evaluations = 0;
+	private int evaluations = 0; 
 
-	public OptimizationAnalysisAdapter(OptimizationContext optimization) {
+	public OptimizationContextAdapter(OptimizationContext optimization) {
 		optimizationContext = optimization;
 	}
 
 	@Override
-	public double[] value(double[] point) throws IllegalArgumentException {
-		optimizationContext.setParameterValues(point);
-		double values[] = optimizationContext.getCalculatedValues();
-		optimizationContext.updateContext(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration " + ++evaluations + "... "));
-		return values;
+	public Pair<RealVector, RealMatrix> value(RealVector point) {
+		double pointArray[] = point.toArray();		
+		double[] value = getModelFunction().value(pointArray);
+		double[][] jacobian = getModelFunctionJacobian().value(pointArray);
+		return new Pair<RealVector, RealMatrix>(new ArrayRealVector(value), new Array2DRowRealMatrix(jacobian));
+	}
+	
+	public MultivariateVectorFunction getModelFunction() {
+		return new MultivariateVectorFunction() {
+			@Override
+			public double[] value(double[] point) throws IllegalArgumentException {
+				optimizationContext.setParameterValues(point);
+				double values[] = optimizationContext.getCalculatedValues();
+				optimizationContext.updateContext(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration " + ++evaluations + "... "));
+				return values;
+			}
+		};
 	}
 
-	@Override
-	public MultivariateMatrixFunction jacobian() {
+	public MultivariateMatrixFunction getModelFunctionJacobian() {
 		return new MultivariateMatrixFunction() {
-
 			@Override
-			public double[][] value(double[] point) throws IllegalArgumentException {
+			public double[][] value(double[] point) {
 				if (centralDiffApproximation)
 					return jacobianCentralDiffApprox(point);
 				return jacobianForwardDiffApprox(point);

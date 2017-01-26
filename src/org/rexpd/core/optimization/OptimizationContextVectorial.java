@@ -1,5 +1,6 @@
 package org.rexpd.core.optimization;
 
+@Deprecated
 public interface OptimizationContextVectorial {
 	
 	public double[] getTargets();

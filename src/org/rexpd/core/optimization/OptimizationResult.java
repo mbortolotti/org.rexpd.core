@@ -14,19 +14,22 @@ public class OptimizationResult {
 		OPTIMIZATION_STARTED, 
 		OPTIMIZATION_FINISHED,
 		OPTIMIZATION_INTERRUPTED;
-
 	}
 
 	private List<Parameter> parameters = null;
-	private Solution solution = null;
+	//private ParameterSet solution = null;
 	private double fitness = 0.0;
 	private String message = "";
 	private EventType eventType = EventType.CYCLE_COMPLETED;
 
-	public OptimizationResult(EventType type, String msg) {
+	public OptimizationResult(EventType type, String msg, List<Parameter> params) {
 		eventType = type;
 		message = msg;
-		parameters = new ArrayList<Parameter>();
+		parameters = params;
+	}
+	
+	public OptimizationResult(EventType type, String msg) {
+		this(type, msg, new ArrayList<Parameter>());
 	}
 	
 	public OptimizationResult() {

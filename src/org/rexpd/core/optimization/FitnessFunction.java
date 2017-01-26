@@ -73,7 +73,7 @@ public abstract class FitnessFunction implements OptimizationContextVectorial {
 	}
 
 	public List<Parameter> getParameters() {
-		return Optimizations.getOptimizableParameters(optimizable);
+		return Optimizations.getOptimizableParameterList(optimizable);
 	}
 	
 	@Override

@@ -10,7 +10,7 @@ public abstract class OptimizationAlgorithm {
 
 	public abstract String getName();
 
-	public abstract OptimizationResult minimize(OptimizationAnalysis p);
+	public abstract OptimizationResult minimize(OptimizationContext context);
 
 	public int getCurrentIteration() {
 		return currentIteration;
@@ -34,14 +34,6 @@ public abstract class OptimizationAlgorithm {
 	
 	public boolean parameterLimitsEnabled() {
 		return paramLimitsEnabled;
-	}
-
-	public void setStopRequested(boolean stop) {
-		stopRequested = stop;
-	}
-
-	public boolean hasStopRequested() {
-		return stopRequested;
 	}
 
 }

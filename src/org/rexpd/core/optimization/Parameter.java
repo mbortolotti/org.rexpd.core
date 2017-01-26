@@ -44,14 +44,37 @@ public class Parameter extends AbstractBase {
 		this(parent, name, 0.0);
 	}
 	
-	public Parameter(Parameter toClone) {
-		this(toClone.getParentNode(), 
-				toClone.getLabel(), 
-				toClone.getValue(), 
-				toClone.getMinValue(), 
-				toClone.getMaxValue(), 
-				toClone.isOptimizable(), 
-				toClone.isEnabled());
+	public Parameter(IBase parent) {
+		this(parent, PARAMETER_TYPE);
+	}
+	
+//	public Parameter(Parameter toClone) {
+//		this(toClone.getParentNode(), 
+//				toClone.getLabel(), 
+//				toClone.getValue(), 
+//				toClone.getMinValue(), 
+//				toClone.getMaxValue(), 
+//				toClone.isOptimizable(), 
+//				toClone.isEnabled());
+//	}
+	
+	public Parameter cloneTo() {
+		Parameter cloned = new Parameter(getParentNode(), getLabel(), 
+				getValue(), getMinValue(), getMaxValue(), 
+				isOptimizable(), isEnabled());
+		cloned.setUID(getUID());
+		return cloned;
+	}
+	
+	public void restoreFrom(Parameter source) {
+		setParentNode(source.getParentNode());
+		setUID(source.getUID());
+		setLabel(source.getLabel());
+		setValue(source.getValue());
+		setMinValue(source.getMinValue());
+		setMaxValue(source.getMaxValue());
+		setOptimizable(source.isOptimizable());
+		setEnabled(source.isEnabled());
 	}
 
 	@ Override

@@ -1,6 +1,6 @@
 package org.rexpd.core.optimization.simulatedannealing;
 
-import org.rexpd.core.optimization.OptimizationAnalysis;
+import org.rexpd.core.optimization.OptimizationContext;
 import org.rexpd.core.optimization.Optimizations;
 
 public class SATest {
@@ -29,7 +29,7 @@ public class SATest {
 			System.out.println(i + "\t" + t_linear + "\t" + t_geom + "\t" + t_exp);
 		}
 		
-		OptimizationAnalysis problem = new TestProblemBeale();
+		OptimizationContext problem = new TestProblemBeale();
 		Optimizations.setOptimizable(problem, true);
 		
 		SimulatedAnnealing sa = new SimulatedAnnealing();

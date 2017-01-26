@@ -1,7 +1,6 @@
 package org.rexpd.core.observer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public class MessageService implements IObservable {
 
-	private List<Observer> observers = null;
+	private static List<Observer> observers = null;
 	private static MessageService service = new MessageService();
 
 	private MessageService() {
@@ -34,14 +33,21 @@ public class MessageService implements IObservable {
 	}
 
 	@Override
-	public void deleteObserver(Observer o) {
+	public void removeObserver(Observer o) {
 		observers.remove(o);
 	}
 
 	@Override
-	public void notifyObservers(Object message) {
-		for (Iterator<Observer> it = observers.iterator(); it.hasNext();)
-			it.next().update(this, message);
+	public void notifyObservers(Message msg) {
+		/** Avoid using iterators or the enhanced-for loop, as those cause ConcurrentModificationException */
+		for (int no = 0; no < observers.size(); no++)
+			observers.get(no).update(msg);
 	}
+	
+//	public static void notify(IObservable sender, Message message) {
+//		/** Avoid using iterators or the enhanced-for loop, as those cause ConcurrentModificationException */
+//		for (int no = 0; no < observers.size(); no++)
+//			observers.get(no).update(sender, message, null);
+//	}
 
 }

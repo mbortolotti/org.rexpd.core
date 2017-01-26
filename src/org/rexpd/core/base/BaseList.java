@@ -4,57 +4,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// TODO Make use of this class to provide generic IBase objects list functionality
-public class BaseList extends AbstractBase {
-	
-	public static final String BASELIST_TYPE = "List";
+// Provides generic IBase objects list functionality
+public class BaseList<T extends IBase> extends AbstractBase {
 
-	private List<IBase> items = null;
-	
-	@Deprecated
-	private IBase activeItem = null;
-	
+	public static final String LIST = "List";
+
+	private List<T> itemsList = null;
+	private T activeItem = null;
+
+	private boolean autoLabel = true;
+
 	public BaseList() {
-		items = new ArrayList<IBase>();
+		itemsList = new ArrayList<T>();
+	}
+
+	public BaseList(List<T> items) {
+		if (items != null) {
+			itemsList = items;
+			if (itemsList.size() > 0)
+				activeItem = items.get(0);
+		}
 	}
 
 	@Override
-	public String getClassID() {
-		return BASELIST_TYPE;
+	public List<T> getNodes() {
+		return itemsList;
 	}
 
-	@Override
-	public List<? extends IBase> getNodes() {
-		return items;
+	public void addItem(T item) {
+		itemsList.add(item);
+		reLabel();
 	}
 
-	public List<IBase> getItems() {
-		return items;
+	public void removeItem(T item) {
+		itemsList.remove(item);
+		reLabel();
 	}
 
-	public void addItem(IBase item) {
-		items.add(item);
+	public int getItemCount() {
+		return itemsList.size();
 	}
 
-	@Deprecated
-	public void setActiveItem(IBase active) {
-		if (items.contains(active))
+	public void setActiveItem(T active) {
+		if (itemsList.contains(active))
 			activeItem = active;
 	}
 
-	@Deprecated
-	public IBase getActiveItem() {
-		checkActiveItem();
+	public T getActiveItem() {
 		return activeItem;
 	}
-
-	@Deprecated
-	private void checkActiveItem() {
-		if (activeItem == null || !items.contains(activeItem))
-			if (items.size() != 0)
-				activeItem = items.get(0);
-			else
-				activeItem = null;
+	
+	private void reLabel() {
+		if (autoLabel)
+			for (int ni = 0; ni < itemsList.size(); ni++)
+				itemsList.get(ni).setLabel(Integer.toString(ni+1));
 	}
 
 }

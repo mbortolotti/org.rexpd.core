@@ -1,21 +1,23 @@
 package org.rexpd.core.math;
 
+import static org.apache.commons.math3.util.FastMath.abs;
+import static org.apache.commons.math3.util.FastMath.PI;
+import static org.apache.commons.math3.util.FastMath.sqrt;
+
 
 public class LorentzFunction {
-	
-	public static double getValue(double x, double FWHM) {
-		double C0 = 2 / (Math.PI * FWHM);
-		double C1 = 4 / FWHM / FWHM;
-		return C0 / ( 1 + C1 * x * x);
-	}
+
+	/** normalization factor so that (integral from -infinity to +infinity) = 1 **/
+	private static final double CL = 4;
 	
 	public static double[] getValues(double[] x, double x_m, double FWHM) {
-		double C0 = 2 / (Math.PI * FWHM);
-		double C1 = 4 / FWHM / FWHM;
 		double[] values = new double[x.length];
+    	if (abs(FWHM) <= Double.MIN_VALUE)
+    		return values;
+    	double KL = sqrt(CL) / FWHM / PI; 
     	for (int n = 0; n < x.length; n++) {
-    		double x_n = x[n] - x_m;
-    		values[n] = C0 / ( 1 + C1 * x_n * x_n);
+    		double x_n = (x[n] - x_m) / FWHM;
+    		values[n] = KL / ( 1 + CL * x_n * x_n);
     	}
 		return values;
 	}

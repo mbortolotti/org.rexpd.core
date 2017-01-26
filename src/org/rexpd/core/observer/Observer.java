@@ -6,9 +6,8 @@
  */
 package org.rexpd.core.observer;
 
-
 public interface Observer {
-	
-	void update(IObservable observable, Object msg);
-	
+
+	void update(Message msg);
+
 }

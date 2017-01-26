@@ -10,44 +10,63 @@ import java.util.List;
  * as long as the latter is assignable from the original object
  *
  */
-public class BaseDynamic extends AbstractBase {
+public class BaseDynamic<T extends IBase> extends AbstractBase {
 
-	private BaseFactory baseFactory = null;
-	private IBase baseInstance = null;
-	
-	public BaseDynamic(BaseFactory factory) {
+	private BaseFactory<T> baseFactory = null;
+	private T baseInstance = null;
+	private String baseType = null;
+
+	public BaseDynamic(BaseFactory<T> factory) {
 		baseFactory = factory;
 		if (baseFactory.getElements().length != 0) {
-			IBase base = baseFactory.create(baseFactory.getElements()[0]);
-			if (base != null) {
-				baseInstance = base;
-				System.out.println("BaseDynamic: base.getClass().getSimpleName(): " + base.getClass().getSimpleName());
+			String type = baseFactory.getElements()[0];
+			T base;
+			try {
+				base = baseFactory.create(type);
+				if (base != null) {
+					baseInstance = base;
+					baseType = type;
+				}
+			} catch (InstantiationException | IllegalAccessException e) {
+				System.out.println("BaseDynamic: cannot instantiate factory object!");
+				e.printStackTrace();
 			}
 		}
 		else
 			System.out.println("BaseDynamic: cannot instantiate factory object!");
 	}
 
-	public String[] getItems() {
+	public String[] getItemTypes() {
 		return baseFactory.getElements();
 	}
-	
-	public IBase setActiveItem(String type) {
-		System.out.println();
-		System.out.println("Setting " + type + " item in " + getClassID() + " factory... ");
-		for (String string : baseFactory.getElements()) {
-			if (type.equals(string)) {
-				System.out.println("Selected " + type + " type in " + getClassID() + " factory!");
-				baseInstance = baseFactory.create(type);
-				return baseInstance;
-			}
-		}
-		System.out.println("ProxyBase.setActiveItem(type): error: type " + type + " not found!");
-		return null;
+
+	public T getActiveItem() {
+		return baseInstance;
 	}
 
-	public IBase getActiveItem() {
+	public T setActiveItem(String type) {
+		/** check if requested type is different from that of active instance **/
+		if (!(type.equals(baseType))) {
+			for (String string : baseFactory.getElements()) {
+				if (type.equals(string)) {
+					try {
+						baseInstance = baseFactory.create(type);
+						baseType = type;
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 		return baseInstance;
+	}
+
+	public T createItem(String type) throws InstantiationException, IllegalAccessException {
+		return baseFactory.create(type);
+	}
+
+	public String getActiveType() {
+		return baseType;
 	}
 
 	@Override

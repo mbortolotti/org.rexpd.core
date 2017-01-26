@@ -1,9 +1,10 @@
 package org.rexpd.core.optimization.simulatedannealing;
 
-import org.rexpd.core.optimization.OptimizationAnalysis;
+import org.rexpd.core.base.AbstractBase;
+import org.rexpd.core.optimization.OptimizationContext;
 import org.rexpd.core.optimization.Parameter;
 
-public class TestProblemGoldstein extends OptimizationAnalysis {
+public class TestProblemGoldstein extends AbstractBase implements OptimizationContext {
 	
 	Parameter X = null;
 	Parameter Y = null;
@@ -33,17 +34,6 @@ public class TestProblemGoldstein extends OptimizationAnalysis {
 		double b = 30 + (2*x - 3*y) * (2*x - 3*y) * (18 - 32*x + 12*x*x + 48*y - 36*x*y + 27*y*y);
 		double value[] = { a*b };
 		return value;
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean canRun() {
-		return true;
 	}
 
 }

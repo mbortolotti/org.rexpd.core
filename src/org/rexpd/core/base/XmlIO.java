@@ -22,6 +22,8 @@ package org.rexpd.core.base;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,7 +41,7 @@ import org.xml.sax.SAXException;
  * @since JDK1.1
  */
 
-public class XML_IO {
+public class XmlIO {
 
 	public static final String NAME_TAG = "name";
 	public static final String TYPE_TAG = "type";
@@ -48,17 +50,11 @@ public class XML_IO {
 	public static final String ENABLED_TAG = "enabled";
 
 	private Document document = null;
-	private String fileName = null;
 
-	public XML_IO(String name) {
-		fileName = name;
-		// parse();
-	}
-
-	public void parseDocument() throws ParserConfigurationException, SAXException, IOException {
+	public void parseDocument(String filepath) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		document = builder.parse(fileName);
+		document = builder.parse(new File(filepath));
 	}
 
 	public void createDocument(String namespaceURI, String qualifiedName, DocumentType doctype)
@@ -68,9 +64,9 @@ public class XML_IO {
 		document = implementation.createDocument(namespaceURI, qualifiedName, doctype);
 	}
 
-	public void writeDocument() throws TransformerFactoryConfigurationError, TransformerException {
+	public void writeDocument(String filepath) throws TransformerFactoryConfigurationError, TransformerException {
 		Source source = new DOMSource(document);
-		File file = new File(fileName);
+		File file = new File(filepath);
 		Result result = new StreamResult(file);
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty("indent", "yes");
@@ -100,11 +96,10 @@ public class XML_IO {
 	}
 
 	/**
-     * Returns the first descendant Element with the given tag name.
-     * @param name The name of the tag to match on. The special value "*" 
-     *   matches all tags.
-     * @return The first matching Element node or null if not found.
-     */
+	 * Returns the first descendant Element with the given tag name.
+	 * @param name The name of the tag to match on. The special value "*" matches all tags.
+	 * @return The first matching Element node or null if not found.
+	 */
 	public static Element getFirstElementByTagName(Element parent, String tag) {
 		NodeList elementList = parent.getElementsByTagName(tag);
 		if (elementList == null || elementList.getLength() == 0)
@@ -115,6 +110,27 @@ public class XML_IO {
 		return null;
 	}
 
+	/**
+	 * Returns a List that contains all children Elements of this node with a given tag name. 
+	 * If there are no children, this is a NodeList containing no nodes.
+	 * @param parent
+	 * @param tag The name of the tag to match on. The special value "*" matches all tags.
+	 * @return A list of matching Element nodes.
+	 */
+	public static List<Element> getChildElementsByTagName(Element parent, String tag) {
+		List<Element> childElements = new ArrayList<Element>();
+		NodeList nodeList = parent.getChildNodes();
+		for (int nn = 0; nn < nodeList.getLength(); nn++) {
+			Node node = nodeList.item(nn);
+			if (node.getNodeType() != Node.ELEMENT_NODE)
+				continue;
+			Element element = (Element) node;
+			if (element.getNodeName().equals(tag))
+				childElements.add(element);
+		}
+		return childElements;
+	}
+	
 	public void DisplayFeatures() {
 
 		DOMImplementation implementation = document.getImplementation();

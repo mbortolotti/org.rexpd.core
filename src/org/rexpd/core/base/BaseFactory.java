@@ -1,10 +1,16 @@
 package org.rexpd.core.base;
 
-public interface BaseFactory {
+
+/**
+ * Factory method interface for instantiating IBase objects
+ *
+ * @param <T> generic IBase type 
+ */
+public interface BaseFactory<T extends IBase> {
 	
 	public String[] getElements();
 	
-	public IBase create(String type);
+	public T create(String type) throws InstantiationException, IllegalAccessException;
 
 	public String getClassID();
 

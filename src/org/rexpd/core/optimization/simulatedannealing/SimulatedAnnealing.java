@@ -4,15 +4,13 @@ package org.rexpd.core.optimization.simulatedannealing;
 import java.util.List;
 
 import org.apache.commons.math3.random.MersenneTwister;
-import org.rexpd.core.observer.MessageService;
 import org.rexpd.core.optimization.OptimizationAlgorithm;
-import org.rexpd.core.optimization.OptimizationAnalysis;
+import org.rexpd.core.optimization.OptimizationContext;
 import org.rexpd.core.optimization.OptimizationResult;
+import org.rexpd.core.optimization.OptimizationResult.EventType;
 import org.rexpd.core.optimization.Optimizations;
 import org.rexpd.core.optimization.Parameter;
-
-import org.rexpd.core.optimization.Solution;
-import org.rexpd.core.optimization.OptimizationResult.EventType;
+import org.rexpd.core.optimization.ParameterSet;
 
 
 
@@ -20,7 +18,6 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 
 	public static final String SIMULATED_ANNEALING = "Simulated Annealing";
 
-	//private OptimizationAnalysis problem = null;
 	private MersenneTwister randomizer = null;
 
 	private AnnealingSchedule annealingSchedule = new AnnealingScheduleGeometric();
@@ -60,92 +57,92 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		return SIMULATED_ANNEALING;
 	}
 
-	@Override
-	public OptimizationResult minimize(OptimizationAnalysis problem) {
-
-		OptimizationResult results = new OptimizationResult();
-		List<Parameter> parameters = Optimizations.getOptimizableParameters(problem);
-
-		if (parameters.size() < 1) {
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "No optimizable parameters selected!"));
-			return results;
-		}
-
-		Solution startSolution = new Solution(problem);
-		bestFitness = getScalarFitness(problem, startSolution);
-		currentParameter = 0;
-
-		if (getInitRandom()) {
-			startSolution = randomize(startSolution);
-		}
-
-		Solution currentSolution = startSolution;
-		Solution bestSolution = startSolution;
-
-		currFitness = getScalarFitness(problem, startSolution);
-
-		System.out.println("currFitness: " + currFitness);
-
-		MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_STARTED, "Starting Simulated Annealing..."));
-
-		if (getAutoCalibration()) {
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Performing automatic calibration..."));
-			int populationSize = startSolution.getParameters().size() * DEFAULT_PARAMETER_MULTIPLIER;
-			double T0 = calibrateTemperature(problem, DEFAULT_ACCEPTANCE_START, populationSize / 10, 5);
-			double T1 = calibrateTemperature(problem, DEFAULT_ACCEPTANCE_END, populationSize / 10, 5);
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "...done!"));
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Population size = " + populationSize));
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Initial temperature T0 = " + T0));
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Final temperature T1 = " + T1));
-			setPopulation(populationSize);
-			setTStart(T0);
-			setTEnd(T1);
-		}
-
-		getAnnealingSchedule().initSchedule(getTStart(), getTEnd(), getIterations());
-
-		while (getAnnealingSchedule().hasNext()) {
-			double T = getAnnealingSchedule().nextValue();
-			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration performed"));
-			//System.out.println("Current temperature: " + T);
-			for (int ni = 0; ni < getPopulation(); ni++) {
-				if (hasStopRequested()) {
-					MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "Optimization interrupted by user"));
-					return results;
-				}
-
-				Solution newSolution = mutate(currentSolution);
-				double newFitness = getScalarFitness(problem, newSolution);
-				double prob = Math.exp( - (newFitness - currFitness) / (T));
-				double random = getRandomValue();
-
-				if (newFitness < currFitness || prob > random) {
-					//for (Parameter parameter : newSolution.getParameters()) 
-					//	System.out.print(parameter.getLabel() + " = " + parameter.getValue() + "; ");
-					//System.out.println();
-					//System.out.println("currFitness = " + currFitness + "; newFitness = " + newFitness);
-
-					currFitness = newFitness;
-					currentSolution = newSolution;
-					if (currFitness < bestFitness) {
-						bestFitness = currFitness;
-						bestSolution = currentSolution;
-					}
-				}
-			}
-			problem.setSolution(bestSolution);
-		}
-
-		problem.setSolution(bestSolution);
-
-		results.setParameters(bestSolution.getParameters());
-		results.setFitness(bestFitness);
-		results.setType(EventType.OPTIMIZATION_FINISHED);
-		results.setMessage("Optimization finished!");
-		MessageService.getInstance().notifyObservers(results);
-
-		return results;
-	}
+//	@Override
+//	public OptimizationResult minimize(OptimizationAnalysis problem) {
+//
+//		OptimizationResult results = new OptimizationResult();
+//		List<Parameter> parameters = Optimizations.getOptimizableParameters(problem);
+//
+//		if (parameters.size() < 1) {
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "No optimizable parameters selected!"));
+//			return results;
+//		}
+//
+//		ParameterSet startSolution = new ParameterSet(problem);
+//		bestFitness = getScalarFitness(problem, startSolution);
+//		currentParameter = 0;
+//
+//		if (getInitRandom()) {
+//			startSolution = randomize(startSolution);
+//		}
+//
+//		ParameterSet currentSolution = startSolution;
+//		ParameterSet bestSolution = startSolution;
+//
+//		currFitness = getScalarFitness(problem, startSolution);
+//
+//		System.out.println("currFitness: " + currFitness);
+//
+//		MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_STARTED, "Starting Simulated Annealing..."));
+//
+//		if (getAutoCalibration()) {
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Performing automatic calibration..."));
+//			int populationSize = startSolution.getParameters().size() * DEFAULT_PARAMETER_MULTIPLIER;
+//			double T0 = calibrateTemperature(problem, DEFAULT_ACCEPTANCE_START, populationSize / 10, 5);
+//			double T1 = calibrateTemperature(problem, DEFAULT_ACCEPTANCE_END, populationSize / 10, 5);
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "...done!"));
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Population size = " + populationSize));
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Initial temperature T0 = " + T0));
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Final temperature T1 = " + T1));
+//			setPopulation(populationSize);
+//			setTStart(T0);
+//			setTEnd(T1);
+//		}
+//
+//		getAnnealingSchedule().initSchedule(getTStart(), getTEnd(), getIterations());
+//
+//		while (getAnnealingSchedule().hasNext()) {
+//			double T = getAnnealingSchedule().nextValue();
+//			MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration performed"));
+//			//System.out.println("Current temperature: " + T);
+//			for (int ni = 0; ni < getPopulation(); ni++) {
+//				if (hasStopRequested()) {
+//					MessageService.getInstance().notifyObservers(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "Optimization interrupted by user"));
+//					return results;
+//				}
+//
+//				ParameterSet newSolution = mutate(currentSolution);
+//				double newFitness = getScalarFitness(problem, newSolution);
+//				double prob = Math.exp( - (newFitness - currFitness) / (T));
+//				double random = getRandomValue();
+//
+//				if (newFitness < currFitness || prob > random) {
+//					//for (Parameter parameter : newSolution.getParameters()) 
+//					//	System.out.print(parameter.getLabel() + " = " + parameter.getValue() + "; ");
+//					//System.out.println();
+//					//System.out.println("currFitness = " + currFitness + "; newFitness = " + newFitness);
+//
+//					currFitness = newFitness;
+//					currentSolution = newSolution;
+//					if (currFitness < bestFitness) {
+//						bestFitness = currFitness;
+//						bestSolution = currentSolution;
+//					}
+//				}
+//			}
+//			problem.setSolution(bestSolution);
+//		}
+//
+//		problem.setSolution(bestSolution);
+//
+//		results.setParameters(bestSolution.getParameters());
+//		results.setFitness(bestFitness);
+//		results.setType(EventType.OPTIMIZATION_FINISHED);
+//		results.setMessage("Optimization finished!");
+//		MessageService.getInstance().notifyObservers(results);
+//
+//		return results;
+//	}
 
 	private double getRandomValue() {
 		return randomizer.nextDouble();
@@ -155,9 +152,9 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		return min + (max - min) * randomizer.nextDouble();
 	}
 
-	private double calibrateTemperature(OptimizationAnalysis problem, double acceptance, int ntrials, int niter) {
+	private double calibrateTemperature(OptimizationContext problem, double acceptance, int ntrials, int niter) {
 
-		Solution start = new Solution(problem);
+		ParameterSet start = new ParameterSet(problem);
 
 		double E0array[] = new double[ntrials];
 		double E1array[] = new double[ntrials];
@@ -165,9 +162,9 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		double deltaESum = 0.0;
 		/** Generate the sets of trial states and their neighbors **/
 		for (int i = 0; i < ntrials; i++) {
-			Solution trialState = randomize(start);
+			ParameterSet trialState = randomize(start);
 			double E0 = getScalarFitness(problem, trialState);
-			Solution neighbState = mutate(trialState);
+			ParameterSet neighbState = mutate(trialState);
 			double E1 = getScalarFitness(problem, neighbState);
 			/** assume positive transition probabilities **/
 			E0array[i] = Math.min(E0, E1);
@@ -205,10 +202,10 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		return Math.pow(EMaxSum/EMinSum, 1.5);
 	}
 
-	private Solution mutate(Solution startSolution) {
+	private ParameterSet mutate(ParameterSet startSolution) {
 		if (currentParameter >= startSolution.getParameters().size())
 			return null;
-		Solution newSolution = new Solution(startSolution);
+		ParameterSet newSolution = new ParameterSet(startSolution);
 		Parameter active = newSolution.getParameters().get(currentParameter);
 		double minValue = active.getMinValue();
 		double maxValue = active.getMaxValue();
@@ -221,8 +218,8 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		return newSolution;
 	}
 
-	private Solution randomize(Solution startSolution) {
-		Solution newSolution = new Solution(startSolution);
+	private ParameterSet randomize(ParameterSet startSolution) {
+		ParameterSet newSolution = new ParameterSet(startSolution);
 		for (Parameter parameter : newSolution.getParameters()) {
 			double minValue = parameter.getMinValue();
 			double maxValue = parameter.getMaxValue();
@@ -232,7 +229,7 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 		return newSolution;
 	}
 
-	private double getScalarFitness(OptimizationAnalysis problem, Solution solution) {
+	private double getScalarFitness(OptimizationContext problem, ParameterSet solution) {
 		problem.setParameterValues(solution.getParameterValues());
 		double scalarFitness = 0.0;
 		double[] values = problem.getCalculatedValues();
@@ -292,6 +289,94 @@ public class SimulatedAnnealing extends OptimizationAlgorithm {
 
 	public void setAutoCalibration(boolean autoCalib) {
 		autoCalibration = autoCalib;
+	}
+
+	@Override
+	public OptimizationResult minimize(OptimizationContext context) {
+		OptimizationResult results = new OptimizationResult();
+		List<Parameter> parameters = Optimizations.getOptimizableParameterList(context);
+
+		if (parameters.size() < 1) {
+			context.updateContext(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "No optimizable parameters selected!"));
+			return results;
+		}
+
+		ParameterSet startSolution = new ParameterSet(context);
+		bestFitness = getScalarFitness(context, startSolution);
+		currentParameter = 0;
+
+		if (getInitRandom()) {
+			startSolution = randomize(startSolution);
+		}
+
+		ParameterSet currentSolution = startSolution;
+		ParameterSet bestSolution = startSolution;
+
+		currFitness = getScalarFitness(context, startSolution);
+
+		System.out.println("currFitness: " + currFitness);
+
+		context.updateContext(new OptimizationResult(EventType.OPTIMIZATION_STARTED, "Starting Simulated Annealing..."));
+
+		if (getAutoCalibration()) {
+			context.updateContext(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, "Performing automatic calibration..."));
+			int populationSize = startSolution.getParameters().size() * DEFAULT_PARAMETER_MULTIPLIER;
+			double T0 = calibrateTemperature(context, DEFAULT_ACCEPTANCE_START, populationSize / 10, 5);
+			double T1 = calibrateTemperature(context, DEFAULT_ACCEPTANCE_END, populationSize / 10, 5);
+			String message = "...done!";
+			message += "\nPopulation size = " + populationSize;
+			message += "\nInitial temperature T0 = " + T0;
+			message += "\nFinal temperature T1 = " + T1;
+			context.updateContext(new OptimizationResult(EventType.OPTIMIZATION_MESSAGE, message));
+			setPopulation(populationSize);
+			setTStart(T0);
+			setTEnd(T1);
+		}
+
+		getAnnealingSchedule().initSchedule(getTStart(), getTEnd(), getIterations());
+
+		while (getAnnealingSchedule().hasNext()) {
+			double T = getAnnealingSchedule().nextValue();
+			context.updateContext(new OptimizationResult(EventType.ITERATION_PERFORMED, "Iteration performed"));
+			//System.out.println("Current temperature: " + T);
+			for (int ni = 0; ni < getPopulation(); ni++) {
+				if (context.hasStopRequested()) {
+					context.updateContext(new OptimizationResult(EventType.OPTIMIZATION_INTERRUPTED, "Optimization interrupted by user"));
+					return results;
+				}
+
+				ParameterSet newSolution = mutate(currentSolution);
+				double newFitness = getScalarFitness(context, newSolution);
+				double prob = Math.exp( - (newFitness - currFitness) / (T));
+				double random = getRandomValue();
+
+				if (newFitness < currFitness || prob > random) {
+					//for (Parameter parameter : newSolution.getParameters()) 
+					//	System.out.print(parameter.getLabel() + " = " + parameter.getValue() + "; ");
+					//System.out.println();
+					//System.out.println("currFitness = " + currFitness + "; newFitness = " + newFitness);
+
+					currFitness = newFitness;
+					currentSolution = newSolution;
+					if (currFitness < bestFitness) {
+						bestFitness = currFitness;
+						bestSolution = currentSolution;
+					}
+				}
+			}
+			context.updateContext(new OptimizationResult(EventType.FITNESS_IMPROVED, "New solution accepted", bestSolution.getParameters()));
+		}
+
+		context.updateContext(new OptimizationResult(EventType.OPTIMIZATION_FINISHED, "Optimization finished", bestSolution.getParameters()));
+
+		results.setParameters(bestSolution.getParameters());
+		results.setFitness(bestFitness);
+		results.setType(EventType.OPTIMIZATION_FINISHED);
+		results.setMessage("Optimization finished!");
+		context.updateContext(results);
+		//MessageService.getInstance().notifyObservers(results);
+
+		return results;
 	}
 
 

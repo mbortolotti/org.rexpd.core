@@ -8,45 +8,66 @@ import org.rexpd.core.base.IBase;
 
 public abstract class Optimizations {
 
+	
+	/**
+	 * Returns a list containing all the sub-nodes of a given IBase instance
+	 * by default, parameter instances are cloned
+	 * 
+	 * @param base the base node instance 
+	 * @param fullTree descend the full hierarchy looking for nodes
+	 * @return
+	 */
+	public static List<IBase> getNodeTree(IBase base) {
+		List<IBase> nodes = new ArrayList<IBase>();
+		for(IBase node : base.getNodes()) {
+			if (node instanceof Parameter)
+				nodes.add(((Parameter) node).cloneTo());
+			else
+				nodes.add(new ParameterNode(node));
+		}
+		return nodes;
+	}
+	
+	
 	/**
 	 * Return a list containing all the parameters of a given optimizable instance
 	 * 
-	 * @param base the base obtimizable instance 
-	 * @param fullTree descend the full hyerarchy looking for parameters
+	 * @param base the base optimizable instance 
+	 * @param fullTree descend the full hierarchy looking for parameters
 	 * @return
 	 */
-	public static List<Parameter> getParameters(IBase base, boolean fullTree) {
+	public static List<Parameter> getParameterList(IBase base, boolean fullTree) {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		for(IBase child : base.getNodes()) {
 			if (child instanceof Parameter)
 				parameters.add((Parameter) child);
 			if (fullTree)
-				parameters.addAll(getParameters(child, fullTree));
+				parameters.addAll(getParameterList(child, fullTree));
 		}
 		return parameters;
 	}
 
 	public static List<Parameter> getParameters(IBase base) {
-		return getParameters(base, true);
+		return getParameterList(base, true);
 	}
 
 	/**
 	 * Return a list containing all the optimizable parameters of a given optimizable instance
 	 * 
 	 * @param base the base obtimizable instance 
-	 * @param fullTree descend the full hyerarchy looking for optimizable parameters
+	 * @param fullTree descend the full hierarchy looking for optimizable parameters
 	 * @return
 	 */
-	public static List<Parameter> getOptimizableParameters(IBase base, boolean fullTree) {
+	public static List<Parameter> getOptimizableParameterList(IBase base, boolean fullTree) {
 		List<Parameter> parameters = new ArrayList<Parameter>();
-		for(Parameter parameter : getParameters(base, fullTree))
+		for(Parameter parameter : getParameterList(base, fullTree))
 			if (parameter.isOptimizable())
 				parameters.add(parameter);
 		return parameters;
 	}
 
-	public static List<Parameter> getOptimizableParameters(IBase base) {
-		return getOptimizableParameters(base, true);
+	public static List<Parameter> getOptimizableParameterList(IBase base) {
+		return getOptimizableParameterList(base, true);
 	}
 
 	/**
@@ -130,7 +151,7 @@ public abstract class Optimizations {
 	 * @return the parameter with the given name or null if it doesn't exist
 	 */
 	public static Parameter getParameterByName(IBase base, String name, boolean fullTree) {
-		for(Parameter parameter : getParameters(base, fullTree))
+		for(Parameter parameter : getParameterList(base, fullTree))
 			if (parameter.getLabel().equals(name))
 				return parameter;
 		return null;
@@ -156,7 +177,7 @@ public abstract class Optimizations {
 	 * @return the parameter with the given ID or null if it doesn't exist
 	 */
 	public static Parameter getParameterByID(IBase base, String id, boolean fullTree) {
-		for(Parameter parameter : getParameters(base, fullTree))
+		for(Parameter parameter : getParameterList(base, fullTree))
 			if (parameter.getUID().equals(id))
 				return parameter;
 		return null;
